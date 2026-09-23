@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "kind": "eip-complexity-not-applicable",
+  "eip_number": 8015,
+  "layer": "consensus",
+  "reason": "layer 'consensus' is outside the execution-layer checklist (not applicable layers: ['consensus', 'informational'])",
+  "eip": {
+    "number": 8015,
+    "title": "Remove `deposit` and `eth1data` fields",
+    "source_path": "EIPS/eip-8015.md",
+    "git_blob_sha": "1a2dedd5b1385a70aa0d67f60988e8bf7612f811",
+    "content_sha256": "ce565f18648ce6bf7c61d4bb9d964c712d1c3f11e10f7bafbda0a67da129b216"
+  },
+  "provenance": {
+    "eips_repo": {
+      "path": "/home/dtopz/code/github/EIPs",
+      "origin_url": "https://github.com/ethereum/EIPs",
+      "requested_ref": "24c0edb17b82cb65f26d29f03e084637ec2ae2d4",
+      "remote_ref": null,
+      "resolved_commit": "24c0edb17b82cb65f26d29f03e084637ec2ae2d4"
+    },
+    "template": {
+      "revision": 2,
+      "anchor_count": 28,
+      "path": "templates/EIP-Complexity-Assessment.md",
+      "sha256": "16da70eafc61ca7ff9be62b4a89017f4a881a6ff3a27bb02040334d3100dba2a",
+      "git_blob_sha1": "b0d2258a8fdd1a514b61ef42ab0fd5a6d7fb5046",
+      "git": {
+        "commit": "16539f4f3140319b79339a2736ab71f014c73261",
+        "dirty": true,
+        "remote_url": "https://github.com/danceratopz/eip-complexity.git",
+        "relative_path": "templates/EIP-Complexity-Assessment.md",
+        "head_blob_sha": "b0d2258a8fdd1a514b61ef42ab0fd5a6d7fb5046",
+        "matches_head": true
+      }
+    },
+    "evaluator": {
+      "name": "eip-complexity",
+      "version": "0.1.0",
+      "git": {
+        "commit": "16539f4f3140319b79339a2736ab71f014c73261",
+        "dirty": true,
+        "remote_url": "https://github.com/danceratopz/eip-complexity.git"
+      },
+      "question_set_version": 1,
+      "question_set_sha256": "3732d939059e191528fca811385d4b1d03afca3071f523887e74a266bbbf2084"
+    },
+    "jev": {
+      "requested_model": "jev-1.13.0",
+      "resolved_model": "jev-1.13.0",
+      "sdk_version": "0.7.1"
+    }
+  }
+}
