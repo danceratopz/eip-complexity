@@ -55,6 +55,7 @@ def test_render_from_json_only(completed_run, monkeypatch):
     assert '<a href="https://github.com/example/pm/pulls?q=is%3Apr+EIP-9001">pull requests mentioning EIP-9001</a>' in html
     assert '<a href="https://github.com/example/pm/blob/main/assessments/EIPs/EIP-9001.md">committed file, if merged</a>' in html
     assert "<dt>Human assessments</dt>" in html
+    assert 'for that EIP. A <a href="comparison.html">comparison</a> of these scores with the human assessments and with the LLM evaluations of the <a href="https://example.invalid/study">example study</a> is kept on a separate page.</p>' in html
     import re as _re
 
     assert (_re.search(r'<a href="https://github\.com/[^"]+" title="Source code, configuration and canonical JSON results">source &amp; data: [^<]+</a>', html)

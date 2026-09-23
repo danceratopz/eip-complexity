@@ -38,6 +38,12 @@ path = "complexity_assessments/EIPs"
 branch = "main"
 pr_query = "is:pr complexity"
 
+# Display-only pointer to the hand-generated comparison page next to the results (see README).
+[comparison]
+page = "comparison.html"
+source_url = "https://danceratopz.github.io/retrospective-eip-complexity/prospective/hegota/?evaluator=llm"
+source_label = "retrospective EIP complexity study"
+
 # Scheduled for Inclusion
 [[eips]]
 number = 7805

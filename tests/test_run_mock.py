@@ -26,7 +26,8 @@ def write_config(tmp_path: Path, clone: Path, *, model: str = "jev-1.13.0", forc
         f'jev_model = "{model}"\n'
         f'output_dir = "{tmp_path / "out"}"\n'
         f"render_html = {str(render).lower()}\n"
-        f"force = {str(force).lower()}\n\n{eips}\n[human_assessments]\nrepo = \"example/pm\"\npath = \"assessments/EIPs\"\n",
+        f"force = {str(force).lower()}\n\n{eips}\n[human_assessments]\nrepo = \"example/pm\"\npath = \"assessments/EIPs\"\n"
+        '[comparison]\npage = "comparison.html"\nsource_url = "https://example.invalid/study"\nsource_label = "example study"\n',
         encoding="utf-8",
     )
     return config
@@ -50,6 +51,7 @@ def test_full_run_writes_manifest_evaluation_cache_and_html(eips_clone, tmp_path
     assert manifest["schema_version"] == RESULT_SCHEMA_VERSION and manifest["kind"] == "eip-complexity-run"
     assert manifest["fork"] == "Testfork" and manifest["meta_eip"] == 9000
     assert manifest["human_assessments"] == {"repo": "example/pm", "path": "assessments/EIPs", "branch": "main", "pr_query": "is:pr complexity"}
+    assert manifest["comparison"] == {"page": "comparison.html", "source_url": "https://example.invalid/study", "source_label": "example study"}
     assert manifest["eips_repo"]["resolved_commit"] == commit
     assert manifest["eips_repo"]["remote_ref"] == "refs/heads/trunk"
     assert manifest["template"]["revision"] == 2 and manifest["template"]["anchor_count"] == 28
@@ -207,6 +209,13 @@ def test_human_assessments_repo_must_be_owner_name(tmp_path):
     config = tmp_path / "bad.toml"
     config.write_text('fork = "x"\noutput_dir = "o"\n[human_assessments]\nrepo = "pm"\n[[eips]]\nnumber = 1\n')
     with pytest.raises(ComplexityError, match="'repo' must be a GitHub 'owner/name'"):
+        run(config, client_factory=FakeJev)
+
+
+def test_comparison_page_must_be_a_plain_file_name(tmp_path):
+    config = tmp_path / "bad.toml"
+    config.write_text('fork = "x"\noutput_dir = "o"\n[[eips]]\nnumber = 1\n[comparison]\npage = "../elsewhere.html"\n')
+    with pytest.raises(ComplexityError, match="'page' must be a file name inside output_dir"):
         run(config, client_factory=FakeJev)
 
 

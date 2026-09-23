@@ -1,0 +1,221 @@
+# Hegotá EIPs at the ethereum/EIPs commit used by the retrospective-eip-complexity LLM study
+# (snapshot hegota-pfi-2026-08-26-ac450a4), so that Jev and that study score identical EIP text.
+# The list is the 39 EIPs that study scored, with its stages and layer dispositions at the time.
+# Results: docs/hegota-2026-08-26/. Compared with the LLM and human numbers in docs/hegota/comparison.html.
+
+fork = "Hegota (2026-08-26 snapshot)"
+meta_eip = 8081
+
+eips_repo = "../EIPs"
+eips_ref = "ac450a4ab2f37387385ee9c54b62f518d97e6cc9"
+
+complexity_template = "templates/EIP-Complexity-Assessment.md"
+
+jev_model = "jev-1.13.0"
+
+output_dir = "docs/hegota-2026-08-26"
+cache_dir = ".cache/eip-complexity"
+
+render_html = true
+force = false
+
+[human_assessments]
+repo = "ethspecs/pm"
+path = "complexity_assessments/EIPs"
+branch = "main"
+pr_query = "is:pr complexity"
+
+[[eips]]
+number = 2488
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 3298
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 4758
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 5920
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7645
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7666
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7668
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7709
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7805
+stage = "SFI"
+layer = "cross-layer"
+
+[[eips]]
+number = 7807
+stage = "PFI"
+layer = "cross-layer"
+
+[[eips]]
+number = 7819
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7851
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7862
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7906
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7923
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7979
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8025
+stage = "PFI"
+layer = "cross-layer"
+
+[[eips]]
+number = 8077
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8094
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8115
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8116
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8131
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8141
+stage = "CFI"
+layer = "execution"
+
+[[eips]]
+number = 8146
+stage = "PFI"
+layer = "cross-layer"
+
+[[eips]]
+number = 8148
+stage = "PFI"
+layer = "cross-layer"
+
+[[eips]]
+number = 8151
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8182
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8188
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8200
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8205
+stage = "PFI"
+layer = "cross-layer"
+
+[[eips]]
+number = 8237
+stage = "PFI"
+layer = "cross-layer"
+
+[[eips]]
+number = 8250
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8253
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8272
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8279
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8298
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8304
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8368
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8372
+stage = "PFI"
+layer = "execution"

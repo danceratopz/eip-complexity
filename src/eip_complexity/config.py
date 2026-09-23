@@ -26,8 +26,10 @@ _ALLOWED_TOP_LEVEL = {
     "force",
     "eips",
     "human_assessments",
+    "comparison",
 }
 _ALLOWED_HUMAN_KEYS = {"repo", "path", "branch", "pr_query"}
+_ALLOWED_COMPARISON_KEYS = {"page", "source_url", "source_label"}
 _ALLOWED_EIP_KEYS = {"number", "stage", "layer"}
 
 #: Values accepted for the per-EIP ``layer`` field.
@@ -62,12 +64,25 @@ class HumanAssessments:
 
 
 @dataclass(frozen=True)
+class Comparison:
+    """Display-only pointer to a comparison page kept next to the run, and to the external study it draws on."""
+
+    page: str  # file name relative to output_dir, e.g. "comparison.html"
+    source_url: str | None
+    source_label: str
+
+    def to_dict(self) -> dict:
+        return {"page": self.page, "source_url": self.source_url, "source_label": self.source_label}
+
+
+@dataclass(frozen=True)
 class RunConfig:
     path: Path
     sha256: str
     fork: str
     meta_eip: int | None  # display-only: the hardfork meta EIP the list was taken from
     human_assessments: HumanAssessments | None
+    comparison: Comparison | None
     eips_repo: Path
     eips_ref: str | None
     complexity_template: Path
@@ -136,6 +151,22 @@ def load_config(path: Path) -> RunConfig:
             pr_query=_expect(human_raw, "pr_query", str, default="is:pr complexity", where=human_where).strip(),
         )
 
+    comparison = None
+    comparison_raw = _expect(data, "comparison", dict, default=None, where=where)
+    if comparison_raw is not None:
+        comparison_where = f"{where}: [comparison]"
+        unknown = set(comparison_raw) - _ALLOWED_COMPARISON_KEYS
+        if unknown:
+            raise ComplexityError(f"{comparison_where}: unknown keys {sorted(unknown)}")
+        page = _expect(comparison_raw, "page", str, default="", where=comparison_where).strip()
+        if not page or "/" in page or page.startswith("."):
+            raise ComplexityError(f"{comparison_where}: 'page' must be a file name inside output_dir")
+        comparison = Comparison(
+            page=page,
+            source_url=_expect(comparison_raw, "source_url", str, default="", where=comparison_where).strip() or None,
+            source_label=_expect(comparison_raw, "source_label", str, default="an external study", where=comparison_where).strip(),
+        )
+
     eips_ref = _expect(data, "eips_ref", str, default="", where=where).strip() or None
     jev_model = _expect(data, "jev_model", str, default=DEFAULT_JEV_MODEL, where=where).strip()
     if not jev_model:
@@ -177,6 +208,7 @@ def load_config(path: Path) -> RunConfig:
         fork=fork.strip(),
         meta_eip=meta_eip,
         human_assessments=human_assessments,
+        comparison=comparison,
         eips_repo=Path(_expect(data, "eips_repo", str, default=DEFAULT_EIPS_REPO, where=where)),
         eips_ref=eips_ref,
         complexity_template=Path(_expect(data, "complexity_template", str, default=DEFAULT_TEMPLATE, where=where)),

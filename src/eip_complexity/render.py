@@ -975,11 +975,24 @@ def render_html(manifest: dict, items: list[dict]) -> str:
             f'<a href="https://github.com/{_esc(links["repo"])}">{_esc(links["repo"])}</a>: '
             f'<a href="{_esc(links["directory"])}">merged evaluations</a> and '
             f'<a href="{_esc(links["pulls"])}">evaluations in progress or under review</a> (pull requests). '
-            "Each row\'s details link to the pull requests for that EIP.</p>"
+            "Each row\'s details link to the pull requests for that EIP."
         )
         if links
         else ""
     )
+    comparison = manifest.get("comparison")
+    if comparison:
+        source = (
+            f'the <a href="{_esc(comparison["source_url"])}">{_esc(comparison["source_label"])}</a>'
+            if comparison.get("source_url") else _esc(comparison["source_label"])
+        )
+        sentence = (
+            f' A <a href="{_esc(comparison["page"])}">comparison</a> of these scores with the human assessments '
+            f"and with the LLM evaluations of {source} is kept on a separate page."
+        )
+        human_intro = (human_intro + sentence) if human_intro else f'<p class="intro">{sentence.strip()}'
+    if human_intro:
+        human_intro += "</p>"
     header = (
         '<div class="header-row" role="row">'
         + _sort_header("EIP", "number")

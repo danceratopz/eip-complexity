@@ -254,6 +254,7 @@ def run(config_path: Path, *, client_factory: Callable[[], JevClient] = TypeSafe
         "fork": config.fork,
         "meta_eip": config.meta_eip,
         "human_assessments": config.human_assessments.to_dict() if config.human_assessments else None,
+        "comparison": config.comparison.to_dict() if config.comparison else None,
         "config": {
             "path": str(config.path),
             "sha256": config.sha256,
