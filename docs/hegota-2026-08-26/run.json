@@ -1,0 +1,976 @@
+{
+  "schema_version": 1,
+  "kind": "eip-complexity-run",
+  "created_at": "2026-09-23T10:07:07+00:00",
+  "fork": "Hegota (2026-08-26 snapshot)",
+  "meta_eip": 8081,
+  "human_assessments": {
+    "repo": "ethspecs/pm",
+    "path": "complexity_assessments/EIPs",
+    "branch": "main",
+    "pr_query": "is:pr complexity"
+  },
+  "comparison": null,
+  "notice": {
+    "text": "This is not the current Hegotá evaluation. It re-runs Jev on the EIP versions used by the retrospective EIP complexity study (ethereum/EIPs at ac450a4, 2026-08-26) so that the comparison with that study's LLM and human assessments uses identical text. Several of these EIPs have since been declined for Hegotá. For the current scores see",
+    "link": "../hegota/",
+    "link_label": "the Hegotá evaluation."
+  },
+  "config": {
+    "path": "configs/hegota-2026-08-26.toml",
+    "sha256": "2b097ab82cbd7c168a90b5c755e6c103bc021704d757251302436c10ef810b6c",
+    "force": false,
+    "render_html": true,
+    "eips": [
+      {
+        "number": 2488,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 3298,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 4758,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 5920,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 7645,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 7666,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 7668,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 7709,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 7805,
+        "stage": "SFI",
+        "layer": "cross-layer"
+      },
+      {
+        "number": 7807,
+        "stage": "PFI",
+        "layer": "cross-layer"
+      },
+      {
+        "number": 7819,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 7851,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 7862,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 7906,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 7923,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 7979,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8025,
+        "stage": "PFI",
+        "layer": "cross-layer"
+      },
+      {
+        "number": 8077,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8094,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8115,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8116,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8131,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8141,
+        "stage": "CFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8146,
+        "stage": "PFI",
+        "layer": "cross-layer"
+      },
+      {
+        "number": 8148,
+        "stage": "PFI",
+        "layer": "cross-layer"
+      },
+      {
+        "number": 8151,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8182,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8188,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8200,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8205,
+        "stage": "PFI",
+        "layer": "cross-layer"
+      },
+      {
+        "number": 8237,
+        "stage": "PFI",
+        "layer": "cross-layer"
+      },
+      {
+        "number": 8250,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8253,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8272,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8279,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8298,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8304,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8368,
+        "stage": "PFI",
+        "layer": "execution"
+      },
+      {
+        "number": 8372,
+        "stage": "PFI",
+        "layer": "execution"
+      }
+    ]
+  },
+  "not_applicable_layers": [
+    "consensus",
+    "informational"
+  ],
+  "eips_repo": {
+    "path": "/home/dtopz/code/github/EIPs",
+    "origin_url": "https://github.com/ethereum/EIPs",
+    "requested_ref": "ac450a4ab2f37387385ee9c54b62f518d97e6cc9",
+    "remote_ref": null,
+    "resolved_commit": "ac450a4ab2f37387385ee9c54b62f518d97e6cc9"
+  },
+  "template": {
+    "revision": 2,
+    "anchor_count": 28,
+    "path": "templates/EIP-Complexity-Assessment.md",
+    "sha256": "16da70eafc61ca7ff9be62b4a89017f4a881a6ff3a27bb02040334d3100dba2a",
+    "git_blob_sha1": "b0d2258a8fdd1a514b61ef42ab0fd5a6d7fb5046",
+    "git": {
+      "commit": "f4fd8c1a699116edc7eb6a3fe7aed05d4db8a1ea",
+      "dirty": true,
+      "remote_url": "https://github.com/danceratopz/eip-complexity.git",
+      "relative_path": "templates/EIP-Complexity-Assessment.md",
+      "head_blob_sha": "b0d2258a8fdd1a514b61ef42ab0fd5a6d7fb5046",
+      "matches_head": true
+    }
+  },
+  "evaluator": {
+    "name": "eip-complexity",
+    "version": "0.1.0",
+    "git": {
+      "commit": "f4fd8c1a699116edc7eb6a3fe7aed05d4db8a1ea",
+      "dirty": true,
+      "remote_url": "https://github.com/danceratopz/eip-complexity.git"
+    },
+    "question_set_version": 1,
+    "question_set_sha256": "3732d939059e191528fca811385d4b1d03afca3071f523887e74a266bbbf2084"
+  },
+  "jev": {
+    "requested_model": "jev-1.13.0",
+    "resolved_model": "jev-1.13.0",
+    "sdk_version": "0.7.1"
+  },
+  "evaluations": [
+    {
+      "number": 2488,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Deprecate the CALLCODE opcode",
+      "path": "evaluations/eip-2488.json",
+      "sha256": "0c84237fa52870cba6f72e97a8b4fd03d3105e8096b28aa299bfde4a175daec7",
+      "total_score": 10,
+      "tier": {
+        "name": "Low Complexity",
+        "emoji": "🟢",
+        "min_inclusive": 0,
+        "max_exclusive": 12,
+        "range": "<12"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 3298,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Remove storage-clear refund and refund cap",
+      "path": "evaluations/eip-3298.json",
+      "sha256": "d4a43313608936fb1a7cefac1687a4b93cb1002586ebb80d7ec2dfd45d13091a",
+      "total_score": 14,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 4758,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Deactivate SELFDESTRUCT",
+      "path": "evaluations/eip-4758.json",
+      "sha256": "e0fe3ba9dc3e0788e13882e94b4445e7e4fca39d667901a242f2d550d4abba3b",
+      "total_score": 14,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 5920,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "PAY opcode",
+      "path": "evaluations/eip-5920.json",
+      "sha256": "18a91062209b7e103cbef618e16c6fe030f803cafb36c0bb37df8a5568af7b0b",
+      "total_score": 13,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 7645,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Alias ORIGIN to SENDER",
+      "path": "evaluations/eip-7645.json",
+      "sha256": "5a7d0dd8848ad5454b6f5018142b63dcd577e1210677f6f27081e2610ed1d180",
+      "total_score": 9,
+      "tier": {
+        "name": "Low Complexity",
+        "emoji": "🟢",
+        "min_inclusive": 0,
+        "max_exclusive": 12,
+        "range": "<12"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 7666,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "EVM-ify the identity precompile",
+      "path": "evaluations/eip-7666.json",
+      "sha256": "5fe45b7b8d72130d06b95ade5c77bec6d6e5f0cba14ca3ad38da225acb4a70f0",
+      "total_score": 13,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 7668,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Remove bloom filters",
+      "path": "evaluations/eip-7668.json",
+      "sha256": "6d177b302df7721de5e26f7086e05a41b1c51e02ed92b5468e86c23df074f62a",
+      "total_score": 5,
+      "tier": {
+        "name": "Low Complexity",
+        "emoji": "🟢",
+        "min_inclusive": 0,
+        "max_exclusive": 12,
+        "range": "<12"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 7709,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Read BLOCKHASH from Storage and Update Cost",
+      "path": "evaluations/eip-7709.json",
+      "sha256": "0b42d084df64a2f47adf6ce5601600a52aca74a0e06f55f74fdb545de6629d52",
+      "total_score": 19,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 7805,
+      "stage": "SFI",
+      "layer": "cross-layer",
+      "status": "evaluated",
+      "title": "Fork-choice enforced Inclusion Lists (FOCIL)",
+      "path": "evaluations/eip-7805.json",
+      "sha256": "6ca30c8082c6f8a1adcbe855edd58e10c31dc818b1e28131bf6d74d89b22abb0",
+      "total_score": 26,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 7807,
+      "stage": "PFI",
+      "layer": "cross-layer",
+      "status": "evaluated",
+      "title": "SSZ execution blocks",
+      "path": "evaluations/eip-7807.json",
+      "sha256": "cb67e04fd1b7ec89015dd977419d65cd74a53c29e69f27ce73ac6d165de5e340",
+      "total_score": 27,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 7819,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "SETDELEGATE instruction",
+      "path": "evaluations/eip-7819.json",
+      "sha256": "878e5d5199b5506426c016673b9c191c01b9a26642e9bd96e8a4821381c83553",
+      "total_score": 17,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 7851,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Code-Controlled EOA Delegation",
+      "path": "evaluations/eip-7851.json",
+      "sha256": "0ec69866a2c07bdf9e9d8f84107891b5deb387288baf136cc3f370d789f31c87",
+      "total_score": 21,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 7862,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Delayed State Root",
+      "path": "evaluations/eip-7862.json",
+      "sha256": "93b733a682042d1b7469cee548246b58ced15d00c88fe923dacd139c29f0ba17",
+      "total_score": 20,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 7906,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Transaction Assertions via State Diff Opcode",
+      "path": "evaluations/eip-7906.json",
+      "sha256": "29b4d1d1ee6b86dae4ac34a98c3943fc39adc440ba40032b5ceb9012f3b27629",
+      "total_score": 25,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 7923,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Linear, Page-Based Memory Costing",
+      "path": "evaluations/eip-7923.json",
+      "sha256": "d54bdd757359c3e4a93e423c562e8ffcc4eff6f8518465d7cc8d72513fa1e88f",
+      "total_score": 20,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 7979,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Call and Return Opcodes for the EVM",
+      "path": "evaluations/eip-7979.json",
+      "sha256": "fd4ace140da0961f1b210ce8da50fcb8805f8a0e72f70bd46b55c483e728485c",
+      "total_score": 12,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8025,
+      "stage": "PFI",
+      "layer": "cross-layer",
+      "status": "evaluated",
+      "title": "Optional Execution Proofs",
+      "path": "evaluations/eip-8025.json",
+      "sha256": "46c3b79218649212de1bfff3500d78ba929d0986d4cb270e70cc471878328d58",
+      "total_score": 18,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8077,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "eth/XX - announce transactions with nonce",
+      "path": "evaluations/eip-8077.json",
+      "sha256": "764a14a9e74a844cd71b2ae829f2c3ee5195c2136c4eda21071a9a5dc232ed26",
+      "total_score": 15,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8094,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "eth/vhash - Blob-Aware Mempool",
+      "path": "evaluations/eip-8094.json",
+      "sha256": "23fc23f6c9bab8af354acf73198ade83812b6597a220b7590b32af7d7f44e531",
+      "total_score": 16,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8115,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Batch priority fees at end of block",
+      "path": "evaluations/eip-8115.json",
+      "sha256": "6511c0aee9e0f09542650140f89177bf72f78a518e3a1b9bfde7d863c77437ec",
+      "total_score": 10,
+      "tier": {
+        "name": "Low Complexity",
+        "emoji": "🟢",
+        "min_inclusive": 0,
+        "max_exclusive": 12,
+        "range": "<12"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8116,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Replace cumulative receipt fields",
+      "path": "evaluations/eip-8116.json",
+      "sha256": "89cd09470dc901a8f8cb8ed688e7c9e5509333e6c0c806c6cdcc492036c2f065",
+      "total_score": 3,
+      "tier": {
+        "name": "Low Complexity",
+        "emoji": "🟢",
+        "min_inclusive": 0,
+        "max_exclusive": 12,
+        "range": "<12"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8131,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Unified Transaction Content Floor",
+      "path": "evaluations/eip-8131.json",
+      "sha256": "d4d4da1ce941ed1365ec04c822cb65946b511e92fa726b4b5b062a637b904fe8",
+      "total_score": 22,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8141,
+      "stage": "CFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Frame Transaction",
+      "path": "evaluations/eip-8141.json",
+      "sha256": "9306e72076ca0b7f0c6193a31ae977a0fc4dfa21ef17b70b6cd4ef87c99c50b9",
+      "total_score": 50,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8146,
+      "stage": "PFI",
+      "layer": "cross-layer",
+      "status": "evaluated",
+      "title": "Block Access List Sidecars",
+      "path": "evaluations/eip-8146.json",
+      "sha256": "7e8a33b2076b9c3da4938460014c31c232e2d4228abcc8b0c804f1ecb85afda0",
+      "total_score": 27,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8148,
+      "stage": "PFI",
+      "layer": "cross-layer",
+      "status": "evaluated",
+      "title": "Custom sweep threshold for validators",
+      "path": "evaluations/eip-8148.json",
+      "sha256": "d6db6e51b9d44a01bf888104e2261dbf5d4496bb6a927c638e13f31dad788cd0",
+      "total_score": 32,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8151,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Account Code Restricted ecRecover",
+      "path": "evaluations/eip-8151.json",
+      "sha256": "2c9f0c41e36047cdf5fb6a24c7587e8cfcffbcea224820749280878b69a67795",
+      "total_score": 27,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8182,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Private ETH and ERC-20 Transfers",
+      "path": "evaluations/eip-8182.json",
+      "sha256": "7cb6f00a67bb019739cd580a48cbaf884133cd67abc83ff526da771395e30c96",
+      "total_score": 19,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8188,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Last-Written Block for Accounts and Slots",
+      "path": "evaluations/eip-8188.json",
+      "sha256": "ed17d38a13d2f77f1a4754a5f5301e675cf2dbacd1bfb5931113d5d0f01ac9fc",
+      "total_score": 16,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8200,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "EVMification",
+      "path": "evaluations/eip-8200.json",
+      "sha256": "683e2a228445275eb29ee93ead3318d9bf8dacb829499af161b58cd543a713de",
+      "total_score": 26,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8205,
+      "stage": "PFI",
+      "layer": "cross-layer",
+      "status": "evaluated",
+      "title": "Withdrawal credentials preregistration",
+      "path": "evaluations/eip-8205.json",
+      "sha256": "2371b3d2d6a920fa1d9b7432721092ebf8940473b1decb5c304f44c1b7a18ef0",
+      "total_score": 33,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8237,
+      "stage": "PFI",
+      "layer": "cross-layer",
+      "status": "evaluated",
+      "title": "Independent CL/EL Sync",
+      "path": "evaluations/eip-8237.json",
+      "sha256": "6357bc202fdd18ac58ee7a0c939809ce1cedec38e639a80e285315dafa4ded8c",
+      "total_score": 28,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8250,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Keyed Nonces for Frame Transactions",
+      "path": "evaluations/eip-8250.json",
+      "sha256": "cb0d5c472ae5b1d30850b2c9ca43b73ede9c5184d09c731b185d8591114cb266",
+      "total_score": 35,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8253,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Bump nonce of zero-nonce storage accounts",
+      "path": "evaluations/eip-8253.json",
+      "sha256": "55965bdcfb3c64ab5d7cb055c393bd216cbc7e8f225859b39f0fb00f5a4f8deb",
+      "total_score": 13,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8272,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Recent Roots for Frame Transactions",
+      "path": "evaluations/eip-8272.json",
+      "sha256": "4bef0a8b5f92ad2e40fbc821ab4f9c5eb87bbada4951a1621dd9391d495c82eb",
+      "total_score": 31,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8279,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Block Access List Byte Floor",
+      "path": "evaluations/eip-8279.json",
+      "sha256": "bcfe33c92f3b86f0f910e0a861bf669c01662a4a5ab8c16a7092fef7a7d551ca",
+      "total_score": 24,
+      "tier": {
+        "name": "High Complexity",
+        "emoji": "🔴",
+        "min_inclusive": 23,
+        "max_exclusive": null,
+        "range": ">=23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8298,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "SETCODEFROM Code Reuse Instruction",
+      "path": "evaluations/eip-8298.json",
+      "sha256": "f518a436b43a21d97fb133399fb832ea2eccc4df48fbdba9809a29b6f515ee6c",
+      "total_score": 19,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8304,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Trustless log and transaction index",
+      "path": "evaluations/eip-8304.json",
+      "sha256": "c87fb65d2fc73a0dca2a337352824340aaab67c474e352a5b1093c0ca37558c3",
+      "total_score": 20,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8368,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "CPSB Recalibration for New Gas Limit",
+      "path": "evaluations/eip-8368.json",
+      "sha256": "da4a7292b969f254c61f30d44344ea51801333a993295d91f752aca885376d59",
+      "total_score": 7,
+      "tier": {
+        "name": "Low Complexity",
+        "emoji": "🟢",
+        "min_inclusive": 0,
+        "max_exclusive": 12,
+        "range": "<12"
+      },
+      "cache_hit": true
+    },
+    {
+      "number": 8372,
+      "stage": "PFI",
+      "layer": "execution",
+      "status": "evaluated",
+      "title": "Normalized state gas limit",
+      "path": "evaluations/eip-8372.json",
+      "sha256": "a2366254031c139ab33b2d2644a284d4073c2782603822425d5e23bce90faa87",
+      "total_score": 21,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      },
+      "cache_hit": true
+    }
+  ],
+  "methodology": {
+    "summary": "Each EIP is judged by one Jev (TypeSafe System One) request containing one Choice question per checklist criterion plus one yes/no Choice per candidate interacting EIP. Criterion scores are the chosen option; the Cross-EIP bonus, total and tier are computed in code from the template's rules.",
+    "limitations": [
+      "Only the target EIP's own Markdown is supplied to Jev. Dependency EIPs, implementation status, devnet history and discussion threads are not available to the model, and the questions instruct it not to assume them.",
+      "Cross-EIP candidates are derived solely from the target EIP's frontmatter `requires` field and explicit EIP-NNNN references in its text.",
+      "Jev does not produce prose. The template's Rationale, Special Considerations and Notes sections are therefore absent (null), not generated."
+    ]
+  }
+}

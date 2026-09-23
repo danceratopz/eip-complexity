@@ -22,8 +22,8 @@
       "sha256": "16da70eafc61ca7ff9be62b4a89017f4a881a6ff3a27bb02040334d3100dba2a",
       "git_blob_sha1": "b0d2258a8fdd1a514b61ef42ab0fd5a6d7fb5046",
       "git": {
-        "commit": "16539f4f3140319b79339a2736ab71f014c73261",
-        "dirty": true,
+        "commit": "f4fd8c1a699116edc7eb6a3fe7aed05d4db8a1ea",
+        "dirty": false,
         "remote_url": "https://github.com/danceratopz/eip-complexity.git",
         "relative_path": "templates/EIP-Complexity-Assessment.md",
         "head_blob_sha": "b0d2258a8fdd1a514b61ef42ab0fd5a6d7fb5046",
@@ -34,8 +34,8 @@
       "name": "eip-complexity",
       "version": "0.1.0",
       "git": {
-        "commit": "16539f4f3140319b79339a2736ab71f014c73261",
-        "dirty": true,
+        "commit": "f4fd8c1a699116edc7eb6a3fe7aed05d4db8a1ea",
+        "dirty": false,
         "remote_url": "https://github.com/danceratopz/eip-complexity.git"
       },
       "question_set_version": 1,

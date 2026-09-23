@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "eip-complexity-run",
-  "created_at": "2026-09-23T06:35:31+00:00",
+  "created_at": "2026-09-23T10:07:05+00:00",
   "fork": "Hegota",
   "meta_eip": 8081,
   "human_assessments": {
@@ -10,9 +10,17 @@
     "branch": "main",
     "pr_query": "is:pr complexity"
   },
+  "comparison": {
+    "page": "comparison.html",
+    "source_url": "https://danceratopz.github.io/retrospective-eip-complexity/prospective/hegota/?evaluator=llm",
+    "source_label": "retrospective EIP complexity study",
+    "rerun_page": "../hegota-2026-08-26/",
+    "rerun_label": "a Jev rerun on the EIP versions that study used"
+  },
+  "notice": null,
   "config": {
     "path": "configs/hegota.toml",
-    "sha256": "4992374caddf7e9e8eaf3a68888ed11541d80e5306e27a8ca12ffbd667f98693",
+    "sha256": "2aa0410a14f129db18d712e3eda09fa05bc4579d15958c474f8703ea261bb6c7",
     "force": false,
     "render_html": true,
     "eips": [
@@ -226,8 +234,8 @@
     "sha256": "16da70eafc61ca7ff9be62b4a89017f4a881a6ff3a27bb02040334d3100dba2a",
     "git_blob_sha1": "b0d2258a8fdd1a514b61ef42ab0fd5a6d7fb5046",
     "git": {
-      "commit": "16539f4f3140319b79339a2736ab71f014c73261",
-      "dirty": true,
+      "commit": "f4fd8c1a699116edc7eb6a3fe7aed05d4db8a1ea",
+      "dirty": false,
       "remote_url": "https://github.com/danceratopz/eip-complexity.git",
       "relative_path": "templates/EIP-Complexity-Assessment.md",
       "head_blob_sha": "b0d2258a8fdd1a514b61ef42ab0fd5a6d7fb5046",
@@ -238,8 +246,8 @@
     "name": "eip-complexity",
     "version": "0.1.0",
     "git": {
-      "commit": "16539f4f3140319b79339a2736ab71f014c73261",
-      "dirty": true,
+      "commit": "f4fd8c1a699116edc7eb6a3fe7aed05d4db8a1ea",
+      "dirty": false,
       "remote_url": "https://github.com/danceratopz/eip-complexity.git"
     },
     "question_set_version": 1,
@@ -258,7 +266,7 @@
       "status": "evaluated",
       "title": "Fork-choice enforced Inclusion Lists (FOCIL)",
       "path": "evaluations/eip-7805.json",
-      "sha256": "88c80894f18143f97b60fd1a78ef9c1cf2e9a97ba0baa79107f826e7473d6492",
+      "sha256": "749c90931d4002337beb68ec10b6ed00e7325fc85a39c50f737cec0376bed5ce",
       "total_score": 26,
       "tier": {
         "name": "High Complexity",
@@ -276,7 +284,7 @@
       "status": "evaluated",
       "title": "Frame Transaction",
       "path": "evaluations/eip-8141.json",
-      "sha256": "7eace50f94faadb5934dc2593bedd10fdf9d513f1d624544610fe3ca2348d915",
+      "sha256": "85ddaa024b73e64fb46f9c32264d9cdc529e5c0ad7164f2bac6c14a49fc30310",
       "total_score": 54,
       "tier": {
         "name": "High Complexity",
@@ -294,7 +302,7 @@
       "status": "not_applicable",
       "title": "Remove `deposit` and `eth1data` fields",
       "path": "evaluations/eip-8015.not-applicable.json",
-      "sha256": "56f51b06de16c1bc2449a0265336a9ed102e6c2782ead0331fcae3be1286baee",
+      "sha256": "5d89e104e73b44a367b6fe8cebde2464ef8cf171034d981a1af8a0d12b691a0d",
       "reason": "layer 'consensus' is outside the execution-layer checklist (not applicable layers: ['consensus', 'informational'])"
     },
     {
@@ -304,7 +312,7 @@
       "status": "evaluated",
       "title": "Remove storage-clear refund and refund cap",
       "path": "evaluations/eip-3298.json",
-      "sha256": "46ec363c0a8e4fbf9c722aa6a250b6717a7cfb2d9a3ff5c9abaf5b8d066ac5ef",
+      "sha256": "df48709fc91fcf1b8f8fc44b79eac1b2fb13a253a5435aa3c8c6042536fbc6c7",
       "total_score": 14,
       "tier": {
         "name": "Medium Complexity",
@@ -322,7 +330,7 @@
       "status": "evaluated",
       "title": "Deactivate SELFDESTRUCT",
       "path": "evaluations/eip-4758.json",
-      "sha256": "efe3b778f88b499f37471bb125f7aee0c8de956e2f4fddf769deb20283e33148",
+      "sha256": "71451dede43ac7b297eb18ea9a39b42112099cdce717ca58bb191f71e6f21002",
       "total_score": 14,
       "tier": {
         "name": "Medium Complexity",
@@ -340,7 +348,7 @@
       "status": "evaluated",
       "title": "PAY opcode",
       "path": "evaluations/eip-5920.json",
-      "sha256": "bfc27cea4d95e41e340253918b23961da5b16c55f92308f44f809ac7acbae5ae",
+      "sha256": "1a3eb1d7622da9acdff1a1a04bf9b81a01688d4f88dbc5b43a0fba4c7c4988ad",
       "total_score": 13,
       "tier": {
         "name": "Medium Complexity",
@@ -358,7 +366,7 @@
       "status": "evaluated",
       "title": "EVM-ify the identity precompile",
       "path": "evaluations/eip-7666.json",
-      "sha256": "da1c452165e687e10f3d1945a4bc5bc29ef8e60032f8644433dd997cf2b4b127",
+      "sha256": "ac1ef329259f0c24063a6243cee709c44f1f347d0e86b9a4bddd1d95c28a050c",
       "total_score": 13,
       "tier": {
         "name": "Medium Complexity",
@@ -376,7 +384,7 @@
       "status": "evaluated",
       "title": "Remove bloom filters",
       "path": "evaluations/eip-7668.json",
-      "sha256": "481d48c5a5b327eb8b29ea94c5ac9722f9377995c1c6f2b72ef168e89f368083",
+      "sha256": "0286535c41a980d13ca34bd25330df1e6cc4b725346228ae6345a117eec5e947",
       "total_score": 5,
       "tier": {
         "name": "Low Complexity",
@@ -394,7 +402,7 @@
       "status": "evaluated",
       "title": "Read BLOCKHASH from Storage and Update Cost",
       "path": "evaluations/eip-7709.json",
-      "sha256": "502b44aa4f4fe545a3d13bb79945baf4fdb864c8c2bf4f83a170286f300cddca",
+      "sha256": "1769db9793010c0a4448ddd3af943920a1c4ce7533d05efc57246f72aa14590b",
       "total_score": 19,
       "tier": {
         "name": "Medium Complexity",
@@ -412,7 +420,7 @@
       "status": "not_applicable",
       "title": "Anti-correlation attestation penalties",
       "path": "evaluations/eip-7716.not-applicable.json",
-      "sha256": "0fd8c6d6cf3387889f69f38fa28f18efc2306e7a26a4368010f9f225cd55eeae",
+      "sha256": "e5b476cd934f6e2311d1c1c4545c7a0238c3ca6c5dd65cb903d1a17b471530d7",
       "reason": "layer 'consensus' is outside the execution-layer checklist (not applicable layers: ['consensus', 'informational'])"
     },
     {
@@ -422,7 +430,7 @@
       "status": "evaluated",
       "title": "Transaction Assertions via State Diff Opcode",
       "path": "evaluations/eip-7906.json",
-      "sha256": "e556f835e74803a4cc64094f0465c42eea683481a82f164755147fb791d536f1",
+      "sha256": "f75e9146797faa4cc3c36a15b8ef639ea052a479117977cdcd7d128ffa50e329",
       "total_score": 24,
       "tier": {
         "name": "High Complexity",
@@ -440,7 +448,7 @@
       "status": "evaluated",
       "title": "Call and Return Opcodes for the EVM",
       "path": "evaluations/eip-7979.json",
-      "sha256": "04159738b0bf4503d25ba5d27457915105f1c847d5291082f3c87e65ed21ac11",
+      "sha256": "4c19939c9edb4ff535ae48f349451cf8ce8f2facd48fb7a84c5bf46a64da6e17",
       "total_score": 15,
       "tier": {
         "name": "Medium Complexity",
@@ -458,7 +466,7 @@
       "status": "evaluated",
       "title": "Optional Execution Proofs",
       "path": "evaluations/eip-8025.json",
-      "sha256": "b6261c51ea54d4ea3470e0bbb0173e118c05d147d1505c2bac908bd8e7addd8b",
+      "sha256": "44b3282cee321f5190953ced53bae11a28bb77eea7f8f0811fdb611a606db6fa",
       "total_score": 18,
       "tier": {
         "name": "Medium Complexity",
@@ -476,7 +484,7 @@
       "status": "evaluated",
       "title": "eth/XX - announce transactions with nonce",
       "path": "evaluations/eip-8077.json",
-      "sha256": "d6eb0065a3c798e1c3a872fcd1393a898922f012e61a8e70238e9a69e48e5afe",
+      "sha256": "11a728576e0debbb1bfff7d7e369c7b22ad45a7cb970d8da1511779ffdf8035c",
       "total_score": 15,
       "tier": {
         "name": "Medium Complexity",
@@ -494,7 +502,7 @@
       "status": "evaluated",
       "title": "Replace cumulative receipt fields",
       "path": "evaluations/eip-8116.json",
-      "sha256": "af005200f82484079a43f616a41f4cdc095af497279c61ca7ec4c7f0b4c32f94",
+      "sha256": "042bd3306a2d016989d446640f74e358068bef11acb88faaf84af5e4217a78d7",
       "total_score": 3,
       "tier": {
         "name": "Low Complexity",
@@ -512,7 +520,7 @@
       "status": "evaluated",
       "title": "Unified Transaction Content Floor",
       "path": "evaluations/eip-8131.json",
-      "sha256": "313fa0230447b279cc2159d26062d3f0cc8fa4be47f06790d21fe4725a57bce4",
+      "sha256": "d6b0000c2c292b27e35de3292f552603722d64d321e8eda073cd791b02245b3b",
       "total_score": 22,
       "tier": {
         "name": "Medium Complexity",
@@ -530,7 +538,7 @@
       "status": "evaluated",
       "title": "Block-in-Blobs (BiB)",
       "path": "evaluations/eip-8142.json",
-      "sha256": "89ed97e61f7d95f9cbf4e43406ac33efffdcc41a809a959ba66332dc38a1003d",
+      "sha256": "6239c56e581956b55bdbe37d79e50c8b7ac16eacd9c402ae8332228c2d41651f",
       "total_score": 28,
       "tier": {
         "name": "High Complexity",
@@ -548,7 +556,7 @@
       "status": "evaluated",
       "title": "Custom sweep threshold for validators",
       "path": "evaluations/eip-8148.json",
-      "sha256": "7e11e45669bacf5c3a4200da8fcb7111793b7291dbb17c132b4f3460533bcaa3",
+      "sha256": "7f3f1e2e21ca8eb1dda449a6887bb43006a802251bb45a03e5af9b6df3c5ba79",
       "total_score": 31,
       "tier": {
         "name": "High Complexity",
@@ -566,7 +574,7 @@
       "status": "evaluated",
       "title": "Account Code Restricted ecRecover",
       "path": "evaluations/eip-8151.json",
-      "sha256": "975c719dd3d05f7bdbb73a0b50b1715fe33f60106f686ec3f5c5c75c60ddf929",
+      "sha256": "60b1ed151b98e644974ca0fd20ee64b3da03168d587e8d0fe4920e1d483ea60c",
       "total_score": 27,
       "tier": {
         "name": "High Complexity",
@@ -584,7 +592,7 @@
       "status": "evaluated",
       "title": "Reserve `EXTENSION (0xae)` opcode",
       "path": "evaluations/eip-8163.json",
-      "sha256": "090c66dd02347d83a03f9af4465dc57a1ec26bfa3428e54cd5eb4cd037c205e6",
+      "sha256": "0047c546ca0b545a87a3ef7c3238c744cb52b9d581bcdbd318f9f892451b7648",
       "total_score": 6,
       "tier": {
         "name": "Low Complexity",
@@ -602,7 +610,7 @@
       "status": "not_applicable",
       "title": "Foundations of EVM Control Flow",
       "path": "evaluations/eip-8173.not-applicable.json",
-      "sha256": "90576b5bb0b06866e7bc49b9811938b93b11801eeb3e45ce3494a1ac0f6e8d0a",
+      "sha256": "44e8325697217ca2ce894f954415797422ec63c2cfe92029913ff47ad0f80308",
       "reason": "layer 'informational' is outside the execution-layer checklist (not applicable layers: ['consensus', 'informational'])"
     },
     {
@@ -612,7 +620,7 @@
       "status": "evaluated",
       "title": "Quick Slots",
       "path": "evaluations/eip-8198.json",
-      "sha256": "ca3999d9cecbe6adaeca51068703482d38368780f0cc0c537712392b2c104e09",
+      "sha256": "779e80c58de9174eb9c5f9a7f8223deedaabd927e8f692cd4e95e8922ba302c5",
       "total_score": 21,
       "tier": {
         "name": "Medium Complexity",
@@ -630,7 +638,7 @@
       "status": "evaluated",
       "title": "Withdrawal credentials preregistration",
       "path": "evaluations/eip-8205.json",
-      "sha256": "18d040d90cc120a6b3d40abb2ec48a4a9558442bc1f8e5216d1a982d7484f88a",
+      "sha256": "a80e50915e95d3ede6fed0beae33c18b6dd856b5e9ff52520ec4f9a65e5383a7",
       "total_score": 33,
       "tier": {
         "name": "High Complexity",
@@ -648,7 +656,7 @@
       "status": "evaluated",
       "title": "Keyed Nonces for Frame Transactions",
       "path": "evaluations/eip-8250.json",
-      "sha256": "7576cb1057c5769b8f5f4bb50bf6ff1e043032e5c31c75f82a4a94c3231d6e94",
+      "sha256": "5f60b3c235c788e33b764901587589803d9103971b3677c6b4ec9866d3a4ca20",
       "total_score": 37,
       "tier": {
         "name": "High Complexity",
@@ -666,7 +674,7 @@
       "status": "evaluated",
       "title": "Bump nonce of zero-nonce storage accounts",
       "path": "evaluations/eip-8253.json",
-      "sha256": "b4ebe565f6f0a2989b4ea5be109c5b851de3b7af55905460ea1032477fef5dce",
+      "sha256": "bc8675d3cf7303770c0ec3fca547342dcd8e44d33f68842866f48d959c7d49fe",
       "total_score": 13,
       "tier": {
         "name": "Medium Complexity",
@@ -684,7 +692,7 @@
       "status": "evaluated",
       "title": "Recent Roots for Frame Transactions",
       "path": "evaluations/eip-8272.json",
-      "sha256": "7f04af8ea6069c025d375ac464e49c2fc8bc6f1c6eddbefd117e3117a835f788",
+      "sha256": "4f49bc2618bc1a46bbe3c23f5c1feaff90c5b8bbfd6a4ee3a4eb5b67ff930fea",
       "total_score": 24,
       "tier": {
         "name": "High Complexity",
@@ -702,7 +710,7 @@
       "status": "evaluated",
       "title": "Block Access List Byte Floor",
       "path": "evaluations/eip-8279.json",
-      "sha256": "d5fbd76293abdeb7eb8938328a99c7e08187e6048001b7b61ae1a841bd34f77f",
+      "sha256": "8560ad49822225664536adf71b55e76a9f457dc3666f53f3b7b13b9455b1a00e",
       "total_score": 24,
       "tier": {
         "name": "High Complexity",
@@ -720,7 +728,7 @@
       "status": "evaluated",
       "title": "SETCODEFROM Code Reuse Instruction",
       "path": "evaluations/eip-8298.json",
-      "sha256": "31c5ddb2214ea6d2cd129b629130436f8c1b511d183e2327ad7839a24f7f8525",
+      "sha256": "bb1f166a51f8511d6b8a68bc9ef5e7efc4b86f31750e83cbf1ce249f8e4ed50c",
       "total_score": 18,
       "tier": {
         "name": "Medium Complexity",
@@ -738,7 +746,7 @@
       "status": "evaluated",
       "title": "Trustless log and transaction index",
       "path": "evaluations/eip-8304.json",
-      "sha256": "be440183a36ff6e0a60497efc0c5c06841dea46b82b6155724ee8de828ea5b4a",
+      "sha256": "32030ec484f97ed5130c47a62d1aa9edaaf2ccca2851d7a37ec988711120b69e",
       "total_score": 22,
       "tier": {
         "name": "Medium Complexity",
@@ -756,7 +764,7 @@
       "status": "evaluated",
       "title": "BLS withdrawal credential retirement",
       "path": "evaluations/eip-8365.json",
-      "sha256": "42384ff8c7bc94d5a675032135330b194cb0ff0673a4860587497e4cbdde5b22",
+      "sha256": "02a4cdb19977540e3ab491572cb06b61583e3110087d712454b08d1921a136e3",
       "total_score": 17,
       "tier": {
         "name": "Medium Complexity",
@@ -774,7 +782,7 @@
       "status": "evaluated",
       "title": "CPSB Recalibration for New Gas Limit",
       "path": "evaluations/eip-8368.json",
-      "sha256": "258729f00ccfaee328fb424cce7cc7c51ab61e6653d3261d56641530f42fc728",
+      "sha256": "ce1cff8ad0c3f91c912705820c26b9c9c7e98df5f2c90f2c11bd4da514bd1301",
       "total_score": 7,
       "tier": {
         "name": "Low Complexity",
@@ -792,7 +800,7 @@
       "status": "evaluated",
       "title": "VOPS Profiles for FOCIL Eligibility",
       "path": "evaluations/eip-8369.json",
-      "sha256": "fe65da1e6882bc6c8a745def6880b8b5b314ae0347509d27dc2a0cea4888d185",
+      "sha256": "acac425185e1bd3459c5652a451416c46c95687e55aeabf376cfc55eeba07373",
       "total_score": 19,
       "tier": {
         "name": "Medium Complexity",
@@ -810,7 +818,7 @@
       "status": "not_applicable",
       "title": "Align Checkpoint with Epoch Boundary Block",
       "path": "evaluations/eip-8333.not-applicable.json",
-      "sha256": "b01007c81f0319975115c75dc1e373235f5683c5325f60f23d23424bdcd91109",
+      "sha256": "33903bd376e5d83b0d6aa9c09777720b9bb195a5902002cb0f15800b0c587a4d",
       "reason": "layer 'consensus' is outside the execution-layer checklist (not applicable layers: ['consensus', 'informational'])"
     },
     {
@@ -820,7 +828,7 @@
       "status": "evaluated",
       "title": "Precompiles for ML-DSA Verification",
       "path": "evaluations/eip-8355.json",
-      "sha256": "4ef0f82725d69c4173cf05cda64125f797dfa5da8b6430b1ccb04264b89f18e6",
+      "sha256": "c47cbab962ffda61fa7bef726edc18ae5e96b8eb0e637aa78032dcab8e990ea6",
       "total_score": 13,
       "tier": {
         "name": "Medium Complexity",
@@ -838,7 +846,7 @@
       "status": "not_applicable",
       "title": "Tapered Issuance Burn",
       "path": "evaluations/eip-8363.not-applicable.json",
-      "sha256": "d25a9a8d31a470d5bdda516347d69d4cea20e2514251e22a996b94eca096d5e7",
+      "sha256": "bf69528027343f4bcaa49740e17ae88f001b41225e57fb15074d7f32aa54ee66",
       "reason": "layer 'consensus' is outside the execution-layer checklist (not applicable layers: ['consensus', 'informational'])"
     },
     {
@@ -848,7 +856,7 @@
       "status": "evaluated",
       "title": "RowDAS - Distributed Blob Reconstruction",
       "path": "evaluations/eip-8371.json",
-      "sha256": "ef47777cb33a2af96144e441dda959d74f5abfccb897f6ed67061315e28aeac4",
+      "sha256": "e35d858779fc4afe3f7161e066b2622fe592769675960b47fef444401ad516d3",
       "total_score": 18,
       "tier": {
         "name": "Medium Complexity",
@@ -866,7 +874,7 @@
       "status": "evaluated",
       "title": "Normalized state gas limit",
       "path": "evaluations/eip-8372.json",
-      "sha256": "5964fcb9fe97523450b4164ae76eca59fbd3ea7a18bfe15bbb2f6510ff2a6b26",
+      "sha256": "8450436f6e2ee6e00b1486913fbcce6c8f6e28ccac6ac5e1f57e678a9d5a86cc",
       "total_score": 21,
       "tier": {
         "name": "Medium Complexity",
@@ -884,7 +892,7 @@
       "status": "evaluated",
       "title": "Top-up Sync",
       "path": "evaluations/eip-8379.json",
-      "sha256": "cb6719646302665ee2d1a871a6c56ab2d0145df66e99b153238ad66e417928e9",
+      "sha256": "89d576efbda09b323e97633e870ecc4858cfc4dbe816ba65e24ec47d517fc219",
       "total_score": 24,
       "tier": {
         "name": "High Complexity",

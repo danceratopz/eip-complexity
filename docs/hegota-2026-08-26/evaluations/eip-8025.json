@@ -1,0 +1,2102 @@
+{
+  "schema_version": 1,
+  "kind": "eip-complexity-evaluation",
+  "eip_number": 8025,
+  "provenance": {
+    "eips_repo": {
+      "path": "/home/dtopz/code/github/EIPs",
+      "origin_url": "https://github.com/ethereum/EIPs",
+      "requested_ref": "ac450a4ab2f37387385ee9c54b62f518d97e6cc9",
+      "remote_ref": null,
+      "resolved_commit": "ac450a4ab2f37387385ee9c54b62f518d97e6cc9"
+    },
+    "eip_source": {
+      "path": "EIPS/eip-8025.md",
+      "git_blob_sha": "6287bacd18648daa53c955f5d4674b045b364128",
+      "content_sha256": "d6131d778d8903a30c2c0e432b6fae70d25aa8f77a6fb65812237946da4c94b2"
+    },
+    "template": {
+      "revision": 2,
+      "anchor_count": 28,
+      "path": "templates/EIP-Complexity-Assessment.md",
+      "sha256": "16da70eafc61ca7ff9be62b4a89017f4a881a6ff3a27bb02040334d3100dba2a",
+      "git_blob_sha1": "b0d2258a8fdd1a514b61ef42ab0fd5a6d7fb5046",
+      "git": {
+        "commit": "f4fd8c1a699116edc7eb6a3fe7aed05d4db8a1ea",
+        "dirty": true,
+        "remote_url": "https://github.com/danceratopz/eip-complexity.git",
+        "relative_path": "templates/EIP-Complexity-Assessment.md",
+        "head_blob_sha": "b0d2258a8fdd1a514b61ef42ab0fd5a6d7fb5046",
+        "matches_head": true
+      }
+    },
+    "evaluator": {
+      "name": "eip-complexity",
+      "version": "0.1.0",
+      "git": {
+        "commit": "f4fd8c1a699116edc7eb6a3fe7aed05d4db8a1ea",
+        "dirty": true,
+        "remote_url": "https://github.com/danceratopz/eip-complexity.git"
+      },
+      "question_set_version": 1,
+      "question_set_sha256": "3732d939059e191528fca811385d4b1d03afca3071f523887e74a266bbbf2084"
+    },
+    "jev": {
+      "requested_model": "jev-1.13.0",
+      "resolved_model": "jev-1.13.0",
+      "sdk_version": "0.7.1"
+    }
+  },
+  "cache": {
+    "key": "bb7a4627da47415e36440ce72360271bf1d7ac2728b0cc3d43b17fd25f153728",
+    "hit": true
+  },
+  "evaluation": {
+    "eip": {
+      "number": 8025,
+      "title": "Optional Execution Proofs",
+      "source_path": "EIPS/eip-8025.md",
+      "content_sha256": "d6131d778d8903a30c2c0e432b6fae70d25aa8f77a6fb65812237946da4c94b2",
+      "requires": [
+        4844,
+        6110,
+        7002,
+        7251,
+        7688,
+        7732,
+        7928,
+        8282
+      ]
+    },
+    "template": {
+      "revision": 2,
+      "anchor_count": 28,
+      "sha256": "16da70eafc61ca7ff9be62b4a89017f4a881a6ff3a27bb02040334d3100dba2a"
+    },
+    "question_set": {
+      "version": 1,
+      "sha256": "3732d939059e191528fca811385d4b1d03afca3071f523887e74a266bbbf2084"
+    },
+    "jev": {
+      "model_sent": "jev-1.13.0",
+      "resolved_model": "jev-1.13.0",
+      "sdk_version": "0.7.1",
+      "request_id": "req_01a0cbfb135f7fedbf638f9ef233d1d2",
+      "usage": {
+        "input_tokens": 28576,
+        "output_tokens": 1714
+      }
+    },
+    "request": {
+      "sha256": "a952e09058ca30b95a4d2544df200d252ab3223af3ab4e40a5ed438a4ddac37c",
+      "payload": {
+        "state": {
+          "eip_markdown": "---\neip: 8025\ntitle: Optional Execution Proofs\ndescription: Introducing optional execution proofs on the consensus layer\nauthor: Kevaundray Wedderburn (@kevaundray), Justin Drake (@JustinDrake) <justin@ethereum.org>, Ignacio Hagopian (@jsign), Han (@han0110), Francesco Risitano (@frisitano), Cody Gunton (@codygunton)\ndiscussions-to: https://ethereum-magicians.org/t/eip-optional-execution-proofs/25500\nstatus: Draft\ntype: Standards Track\ncategory: Core\ncreated: 2025-09-17\nrequires: 4844, 6110, 7002, 7251, 7688, 7732, 7928, 8282\n---\n\n## Abstract\n\nExecution proofs enable consensus layer (CL) nodes to perform stateless validation of execution payloads. Altruistic _proof-generating nodes_ generate execution proofs and broadcast them over the CL p2p network. _Proof-verifying nodes_ consume gossiped execution proofs and check payload validity by verifying those proofs. Verification is _stateless_ and constant time with respect to the payload's gas limit and EL state size, so a validator's payload-verification requirements are decoupled from the linear cost of re-execution. The mechanism is fully opt-in and does not change consensus validity rules, allowing the proving stack to mature in production; a separate, future EIP could subsequently propose making execution proofs mandatory once they have matured. This EIP does not introduce incentives for proof-generating nodes; for that reason, they are considered altruistic and the mechanism is opt-in.\n\n## Motivation\n\nToday, verifying a beacon block requires re-execution of its execution payload against the execution layer (EL) state — the full set of account and storage trie data. The cost of re-execution scales linearly with the gas limit. This couples a node's resource requirements to the state size and the chain's throughput.\n\nThis EIP introduces an opt-in path with the following properties:\n\n- **Constant-time payload verification.** Once an execution proof is available, a proof-verifying node checks payload validity by verifying the proof. Proof verification is constant time with respect to the payload's gas limit and EL state size.\n- **Stateless verification.** Verifying an execution proof requires only the proof itself and a public commitment to the payload — not the EL state.\n- **Broader verifier participation.** Constant-time, stateless payload verification lowers the resource floor for proof-verifying validators, keeping payload-validity checks tractable for participants with modest hardware and expertise even as the gas limit and state grow.\n- **Optional by design.** Deploying execution proofs as opt-in lets clients and operators build operational experience, collect performance metrics, and fine-tune the proving stack against live-network conditions without enshrining untested mechanics in the protocol or impacting validators that have not opted in.\n\n## Specification\n\nThe key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174).\n\n### Terminology\n\nThis EIP uses the following proof-system terms:\n\n- **Proof system.** The cryptographic system used to prove that a computation was performed correctly. Different proof systems may have different proof formats, verifier logic, proving costs, and security assumptions.\n\n- **Prover.** A node that runs the execution-validation computation and generates an execution proof for the result. In this EIP, provers are opt-in, altruistic proof-generating validators.\n\n- **Verifier.** A node that checks an execution proof instead of re-executing payload validation.\n\n- **Guest.** The program whose execution is being proven. Here, the guest program performs stateless validation of an execution payload.\n\n- **Host.** The off-chain logic that prepares the guest input, runs the guest inside the proof system, and packages the resulting proof.\n\n- **Private input.** Data supplied to the guest by the prover but not revealed to verifiers. In this EIP, the serialised `StatelessInput` is private input: it contains the data needed to run stateless payload validation.\n\n- **Execution Witness.** The execution data within the private input that lets the guest validate the payload without the verifier holding the full EL state.\n\n- **Public input.** The data committed to by the proof and visible to verifiers. In this EIP, the public input binds the proof to a specific `NewPayloadRequest`, chain configuration, and validation result.\n\n- **Proof node.** An external component that performs proof-system-specific work such as proof generation and proof verification.\n\n- **Proof engine.** The implementation-dependent consensus-client protocol that encapsulates proof-subsystem state, generation, and verification. `PROOF_ENGINE` is the reference used in the consensus specifications for the client-provided instance of `ProofEngine`.\n\n- **Proof-aware peer.** A consensus-layer peer that advertises optional execution-proof support and participates in the execution-proof networking protocols for its supported proof types.\n\n- **Server-Sent Events (SSE).** An HTML standard for one-way, long-lived HTTP event streams from server to client. In this EIP, SSE is used in two places: by the beacon node to push `Block` events to the prover, and by the proof node to push proof-completion events to the prover.\n\n### Specification references\n\nThe normative specifications for this EIP are maintained alongside the rest of the protocol in the consensus-specs and execution-specs repositories. The sections below summarise the changes; the canonical sources are:\n\n- [Consensus Layer](https://github.com/ethereum/consensus-specs/tree/031e521f0a82b0e475ecfc13f79dd251a6284fc2/specs/_features/eip8025)\n- Execution Layer:\n    - [Stateless validation interfaces](https://github.com/ethereum/execution-specs/blob/85fc20ca5937719a854472a87cb48d01ef1dffca/src/ethereum/forks/amsterdam/stateless.py)\n    - [Guest program](https://github.com/ethereum/execution-specs/blob/85fc20ca5937719a854472a87cb48d01ef1dffca/src/ethereum/forks/amsterdam/stateless_guest.py)\n    - [Host-side input assembly](https://github.com/ethereum/execution-specs/blob/85fc20ca5937719a854472a87cb48d01ef1dffca/src/ethereum/forks/amsterdam/stateless_host.py)\n    - [Execution witness construction](https://github.com/ethereum/execution-specs/blob/85fc20ca5937719a854472a87cb48d01ef1dffca/src/ethereum/forks/amsterdam/stateless_host_exec_witness.py)\n    - [SSZ serialisation schema](https://github.com/ethereum/execution-specs/blob/85fc20ca5937719a854472a87cb48d01ef1dffca/src/ethereum/forks/amsterdam/stateless_ssz.py)\n    - [Conformance tests](https://github.com/ethereum/execution-specs/tree/85fc20ca5937719a854472a87cb48d01ef1dffca/tests/amsterdam/eip8025_optional_proofs)\n\n### Consensus Layer\n\nThis EIP introduces a new `execution_proof` gossip topic on the\nconsensus-layer p2p network carrying `SignedExecutionProof` messages,\nand a `ProofEngine` interface that beacon nodes use to generate and\nverify execution proofs. Proof generation and\nverification are delegated to an external proof node; the `ProofEngine`\nis the in-client component that mediates communication with it. A node\nMAY enable either or both of:\n\n- **Proof-generating mode.** An active validator that opts in to act as\n  a _prover_ — generates execution proofs and broadcasts them on the\n  `execution_proof` gossip topic.\n- **Proof-verifying mode.** A node that consumes gossiped proofs and\n  treats a verified proof as a supplementary validity signal for the\n  corresponding payload's validity. Proof verification does not require local\n  EL state. Proof-verifying nodes still re-execute payloads themselves;\n  verified proofs are an additional signal, not a replacement for\n  re-execution. This separation lets clients deploy and measure the\n  proving stack against live-network conditions without making\n  fork-choice dependent on it. A subsequent EIP could propose promoting\n  verified proofs to a load-bearing role and dropping re-execution once\n  the stack has matured.\n\nThe following diagram summarises how proofs move between the two roles:\n\n![Execution-proof flow between proof-generating and proof-verifying nodes via the `execution_proof` gossip topic](../assets/eip-8025/proof-flow.png)\n\nAt a high level, the proof lifecycle is:\n\n1. A prover reacts to a new beacon block, constructs the corresponding\n   `NewPayloadRequest`, and calls\n   `proof_engine.request_proofs(new_payload_request, ProofAttributes(proof_types))`\n   to initiate proof generation for its configured `proof_types` on the proof node.\n2. The proof node produces an `ExecutionProof` for each requested type.\n   The prover signs each proof, wraps it in a `SignedExecutionProof`, and\n   broadcasts it on the `execution_proof` topic.\n3. Proof-verifying peers receive the gossip message, run the gossip\n   validation rules, then call `proof_engine.verify_execution_proof` on\n   the inner `ExecutionProof` to confirm payload validity.\n\nThis lifecycle uses the execution-validation window introduced by\n[EIP-7732](./eip-7732.md), which defers execution validation until the next\nbeacon block and provides additional time for proof generation.\n\n**Sync support requirement.** Independent of the request/produce/verify\nloop above, every proof-aware node MUST retain valid proofs for\ncanonical-chain blocks back to the finalised checkpoint so that peers\nsyncing or filling gaps can backfill them via `ExecutionProofsByRange`\nand `ExecutionProofsByRoot` (see [Req/resp domain](#reqresp-domain) for\nthe protocol details).\n\n#### Proof types and containers\n\nThe consensus layer introduces a small set of new types and constants to\nidentify proofs, bound their size, and route gossip signatures:\n\n| Name                               | Value                      |\n| ---------------------------------- | -------------------------- |\n| `ProofType`                        | `uint8`                    |\n| `MAX_PROOF_SIZE`                   | `409600` (= 400 KiB)       |\n| `MAX_EXECUTION_PROOFS_PER_PAYLOAD` | `uint64(4)`                |\n| `DOMAIN_EXECUTION_PROOF`           | `DomainType('0x0D000000')` |\n\n`MAX_PROOF_SIZE` is set at `400 KiB` as a network-bandwidth budget: at the\ngossip target of one proof per `(payload, proof_type)` and the cap of\n`MAX_EXECUTION_PROOFS_PER_PAYLOAD = 4` proof types per payload, the\nworst-case in-flight proof bandwidth per slot is `4 × 400 KiB = 1.6 MiB`\n— of a similar order to existing per-slot blob-sidecar traffic. This\nbounds steady-state traffic. Provers using systems that naturally\nproduce larger proofs are expected to apply proof compression\n(recursion, succinct wrappers) before gossiping.\n\nPeers advertise their supported proof types via\n`ExecutionProofStatus` (see [Req/resp domain](#reqresp-domain)). The set\nof `proof_types` a node speaks is a per-node, dynamic configuration; new\nproof systems can be added by socialising a new `ProofType` value\nout-of-band and rolling it out to consenting operators. Proof-system\nsupport is local, opt-in configuration and does not change consensus\nvalidity rules. Peers discover which proof types overlap during their\n`ExecutionProofStatus` handshake and route requests accordingly.\n\nThe top-level gossip message is the `SignedExecutionProof`:\n\n```python\nclass SignedExecutionProof(Container):\n    message: ExecutionProof\n    validator_index: ValidatorIndex\n    signature: BLSSignature\n```\n\nIts inner `ExecutionProof` couples a serialised proof blob to the proof\nsystem and guest program it was generated against, and to the public\ninput that identifies the payload it certifies:\n\n```python\nclass ExecutionProof(Container):\n    proof_data: ByteList[MAX_PROOF_SIZE]\n    proof_type: ProofType\n    public_input: PublicInput\n\n\nclass PublicInput(Container):\n    new_payload_request_root: Root\n    successful_validation: bool\n    chain_config: ChainConfig\n```\n\nThe fields play the following roles:\n\n- `proof_data` is the proof system's serialised output. It is the only field\n  whose size scales with the prover output and is bounded by\n  `MAX_PROOF_SIZE`.\n- `proof_type` selects which proof system and guest program the verifier dispatches to.\n- `public_input.new_payload_request_root` is the SSZ `hash_tree_root` of the\n  Engine API `NewPayloadRequest` whose execution this proof certifies. It is\n  the link between a proof and a specific execution payload; verifiers use\n  it to bind the proof to the payload they are verifying.\n- `public_input.successful_validation` is `True` if the guest program\n  accepted the payload as valid. Verifiers MUST check this field is\n  `True` before treating the proof as a positive validity signal.\n- `public_input.chain_config` pins the chain ID and fork configuration the\n  guest was run against, preventing cross-chain replay and fork\n  mismatch. `ChainConfig` is defined in the\n  [Execution Layer](#execution-layer) section.\n- `validator_index` and `signature` identify the prover and prove that they\n  signed the proof under `DOMAIN_EXECUTION_PROOF`, allowing peers to\n  attribute invalid proofs to a specific active validator.\n\n#### Proof engine interface\n\nThe `ProofEngine` interface encapsulates the proof-system-specific logic\nso that the consensus layer stays agnostic of which proof system is in\nuse. It acts as a payload-validity oracle for the beacon node, and its\nAPI shape is modelled on the Engine API to allow for seamless\nintegration into the protocol. The `ProofEngine` is realised as an\nin-client component that maintains its own proof state and delegates\nthe cryptographic work of proof generation and verification to an\nexternal proof node, mirroring the way the `ExecutionEngine` delegates\npayload execution to the EL client. The\ninterface comprises four operations and a `ProofAttributes` type:\n\n```python\ndef verify_execution_proof(\n    self: ProofEngine,\n    execution_proof: ExecutionProof,\n) -> bool: ...\n\n\ndef notify_new_payload(\n    self: ProofEngine,\n    new_payload_request: NewPayloadRequest,\n) -> None: ...\n\n\ndef notify_forkchoice_updated(\n    self: ProofEngine,\n    head_block_hash: Hash32,\n    safe_block_hash: Hash32,\n    finalized_block_hash: Hash32,\n) -> None: ...\n\n\n@dataclass\nclass ProofAttributes:\n    proof_types: Sequence[ProofType]\n\n\ndef request_proofs(\n    self: ProofEngine,\n    new_payload_request: NewPayloadRequest,\n    proof_attributes: ProofAttributes,\n) -> Root: ...\n```\n\nThese operations decompose into three concerns:\n\n- **Verification** (`verify_execution_proof`) is called on every incoming\n  proof that passes gossip validation. The engine performs the\n  proof-system-specific cryptographic verification and binds the result\n  to the specific payload identified by\n  `proof.public_input.new_payload_request_root`. A payload is considered\n  proof-verified once `k` valid `SignedExecutionProof`s for it have been\n  verified. The value of `k` will be pinned before this EIP transitions\n  to `Review`; it is intentionally left open while the network gathers\n  real-world data.\n  Peers exchange their current proof-verification view via\n  `ExecutionProofStatus`.\n- **Lifecycle notifications** (`notify_new_payload`,\n  `notify_forkchoice_updated`) keep the engine in sync with the state\n  of the beacon node. `notify_new_payload` lets the engine associate\n  incoming proofs with the payloads they certify;\n  `notify_forkchoice_updated` lets it track the canonical chain to\n  drive proof retention and pruning.\n- **Generation** (`request_proofs`) is used by proof-generating nodes to\n  trigger asynchronous proof generation for a given payload and set of\n  proof types. The return value is `new_payload_request.hash_tree_root()`,\n  which the prover uses as a request id to correlate the proof-completion\n  SSE event the proof node emits when a proof is ready to be fetched.\n\n#### Beacon-chain state transition\n\nEIP-8025 extends `process_block` to forward execution payload processing to\nboth the execution engine and the proof engine, and introduces a new\n`process_execution_proof` handler for incoming proofs.\n\n`process_block` is modified to pass `PROOF_ENGINE` to\n`process_execution_payload`:\n\n```python\ndef process_block(state: BeaconState, block: BeaconBlock) -> None:\n    process_block_header(state, block)\n    process_withdrawals(state, block.body.execution_payload)\n    # [Modified in EIP8025]\n    process_execution_payload(state, block.body, EXECUTION_ENGINE, PROOF_ENGINE)\n    process_randao(state, block.body)\n    process_eth1_data(state, block.body)\n    process_operations(state, block.body)\n    process_sync_aggregate(state, block.body.sync_aggregate)\n```\n\n`process_execution_payload` is modified to additionally notify the proof\nengine of the new payload after the execution engine has accepted it.\nThis hook lets the proof engine learn of each new payload so it\ncan associate it with the proofs that certify it as they arrive over\ngossip:\n\n```python\ndef process_execution_payload(\n    state: BeaconState,\n    body: BeaconBlockBody,\n    execution_engine: ExecutionEngine,\n    proof_engine: ProofEngine,\n) -> None:\n    ...\n    # Verify the execution payload is valid via ExecutionEngine\n    assert execution_engine.verify_and_notify_new_payload(\n        NewPayloadRequest(...)\n    )\n\n    # [New in EIP8025]\n    # Notify ProofEngine of the new execution payload\n    proof_engine.notify_new_payload(NewPayloadRequest(...))\n    ...\n```\n\nA new `process_execution_proof` handles a `SignedExecutionProof` once it has\npassed gossip validation. It re-checks that the prover is active in the\ncurrent state, verifies the BLS signature under `DOMAIN_EXECUTION_PROOF`,\nand delegates cryptographic verification to the proof engine:\n\n```python\ndef process_execution_proof(\n    state: BeaconState,\n    signed_proof: SignedExecutionProof,\n    proof_engine: ProofEngine,\n) -> None:\n    proof_message = signed_proof.message\n\n    # Verify prover is an active validator\n    validator = state.validators[signed_proof.validator_index]\n    assert is_active_validator(validator, get_current_epoch(state))\n\n    domain = get_domain(state, DOMAIN_EXECUTION_PROOF, compute_epoch_at_slot(state.slot))\n    signing_root = compute_signing_root(proof_message, domain)\n    assert bls.Verify(validator.pubkey, signing_root, signed_proof.signature)\n\n    # Verify the execution proof\n    assert proof_engine.verify_execution_proof(proof_message)\n```\n\n`process_execution_proof` is invoked outside the beacon-block state-transition\nfunction and produces no on-chain state change: it is the operational hook\nthat lets a node decide whether to treat a gossiped proof as a valid\nvalidity signal for an execution payload. Proof storage is managed by the\n`ProofEngine`; retention is bounded by `proof_serve_range` (see\n[Req/resp domain](#reqresp-domain)): clients MUST retain proofs for\ncanonical-chain blocks\nback to the finalised checkpoint so they can serve `ExecutionProofsByRange`\nand `ExecutionProofsByRoot` requests.\n\n#### Proof gossip\n\nExecution proofs are gossiped over a new global topic, `execution_proof`,\ncarrying `SignedExecutionProof` messages. Each rule below is a libp2p\ngossipsub validation rule, following the same `[IGNORE]` / `[REJECT]`\nconventions used by the other beacon-node gossip topics. With\n`proof = signed_execution_proof.message`:\n\n- _[IGNORE]_ the proof's `new_payload_request_root` has been seen via\n  gossip or non-gossip sources (clients MAY queue proofs until the\n  corresponding payload arrives).\n- _[IGNORE]_ no _valid_ proof has already been received for the tuple\n  `(new_payload_request_root, proof_type)` — i.e. only the first valid\n  proof of each type per payload is forwarded.\n- _[IGNORE]_ this is the first proof received for the tuple\n  `(new_payload_request_root, proof_type, validator_index)` — i.e. each\n  prover gets one shot per `(payload, proof_type)`.\n- _[REJECT]_ the validator at `validator_index` is an active validator.\n- _[REJECT]_ the BLS signature is valid for the prover's public key under\n  `DOMAIN_EXECUTION_PROOF`.\n- _[REJECT]_ `proof.proof_data` is non-empty and no larger than\n  `MAX_PROOF_SIZE`.\n- _[REJECT]_ all of the checks in `process_execution_proof` pass.\n\nThese rules compose with the existing gossipsub peer-scoring machinery: a\npeer relaying messages that hit `[REJECT]` is downscored by the same\nmechanism that scores misbehaviour on any other CL gossip topic. The\n`[IGNORE]` rules bound steady-state bandwidth — once a node has a valid\nproof for a given `(new_payload_request_root, proof_type)`, additional\nproofs for the same tuple are dropped silently, regardless of who signs\nthem.\n\n#### Req/resp domain\n\nThree req/resp protocols let peers backfill, target, and coordinate proof\nstate:\n\n- **`ExecutionProofsByRange`** — request `(start_slot, count, proof_types)`,\n  response `List[SignedExecutionProof]`. Mirrors `BlobSidecarsByRange` and\n  `DataColumnSidecarsByRange`: range-based, root-unaware, filtered by proof\n  type. Used for bulk backfill of proofs after a syncing window.\n- **`ExecutionProofsByRoot`** — request `List[ProofByRootIdentifier]` where\n  each identifier carries `(block_root, List[proof_type])`, response\n  `List[SignedExecutionProof]`. Used for targeted retrieval when a node\n  knows the specific block roots whose proofs it is missing.\n- **`ExecutionProofStatus`** — request and response share the same\n  container: `(block_root, slot, proof_types)`. Peers exchange the most\n  recent block they consider proof-verified, plus their dynamically\n  advertised set of supported proof types. The dialing peer MUST send a\n  status on first connecting to any proof-aware peer. This is similar in\n  nature to the beacon-chain\n  [`Status v2`](https://github.com/ethereum/consensus-specs/blob/031e521f0a82b0e475ecfc13f79dd251a6284fc2/specs/fulu/p2p-interface.md#status-v2)\n  handshake.\n\nClients MUST serve both range and root requests for any block on the\ncanonical chain whose slot is in `proof_serve_range` — defined as\n`[finalized_checkpoint.slot, current_slot]`. Peers unable to reply respond\nwith `3: ResourceUnavailable` and MAY be descored. The shape of these\nprotocols composes with existing sync flows: a node syncing forward over\nblocks pulls proofs by range; a node patching a specific gap pulls them by\nroot.\n\n#### Discovery\n\nDiscovery is extended with a new Ethereum Node Record (ENR) key, `eproof`, encoded as a `uint8`. A\nnode is considered proof-aware if the field is present and non-zero,\nallowing other peers to filter for proof-aware peers during discovery. This\nmirrors the existing pattern used to advertise data-column awareness in\nFulu via the\n[`cgc` ENR field](https://github.com/ethereum/consensus-specs/blob/031e521f0a82b0e475ecfc13f79dd251a6284fc2/specs/fulu/p2p-interface.md#the-discovery-domain-discv5)\nand is intentionally cheap: no fork or fork-version bump is required for a\nnode to start (or stop) advertising proof support.\n\n#### Prover lifecycle\n\nThe prover lifecycle is illustrated below:\n\n![Prover lifecycle: SSE-driven flow between beacon node, prover, and proof node](../assets/eip-8025/prover-lifecycle.png)\n\nA prover's flow, as detailed in the prover guide referenced above, is\nfully event-driven:\n\n1. **Subscribe to two SSE event streams** at startup:\n   - `Block` events from the beacon node, signalling that a new valid beacon\n     block has been received.\n   - Proof-completion events from the proof node.\n2. **On a `Block` event**, fetch the full `BeaconBlock` via RPC, construct\n   the corresponding `NewPayloadRequest`, choose the `ProofAttributes`\n   (set of `proof_types` the prover wants to generate), and call\n   `proof_engine.request_proofs(...)`. The returned root is used to track\n   the request.\n3. **On a proof-completion event** matching a tracked root, fetch the\n   completed `ExecutionProof` from the proof node, sign it under\n   `DOMAIN_EXECUTION_PROOF`, wrap it in a `SignedExecutionProof`, and\n   broadcast on the `execution_proof` gossip topic.\n\nThe signing helper is:\n\n```python\ndef get_execution_proof_signature(\n    state: BeaconState, proof: ExecutionProof, privkey: int\n) -> BLSSignature:\n    domain = get_domain(state, DOMAIN_EXECUTION_PROOF, compute_epoch_at_slot(state.slot))\n    signing_root = compute_signing_root(proof, domain)\n    return bls.Sign(privkey, signing_root)\n```\n\nThe prover role is scoped to the optional-proof phase. If a future EIP\nwere to make execution proofs mandatory, proof generation would\nplausibly move into block production, at which point the prover role\nand the optional gossip topic could be deprecated in favour of\nin-block proof commitments.\n\n### Execution Layer\n\nThis EIP introduces a stateless execution guest and prover-side logic that\nconstructs the guest input. The prover runs the guest over private\n`StatelessInput` bytes. The proof exposes `StatelessValidationResult` as public\noutput. This output binds the proof to the payload request and execution schema.\n\nA proof-verifying node accepts the execution-layer result only if:\n\n- the proof verifies for the expected guest program.\n- `successful_validation` is `true`.\n- `new_payload_request_root` equals the SSZ `hash_tree_root` of the\n  `NewPayloadRequest` associated with the payload being validated.\n- `chain_id` and `schema_id` match the values expected by the verifier.\n\nAt a high level, proof generation follows this flow:\n\n1. A host, usually a stateful execution-layer client, executes or constructs\n   the block while recording the account, storage, code, and ancestor-header\n   data used during execution.\n2. The host builds an `ExecutionWitness` and combines it with the Engine API\n   request, chain ID, and transaction public keys.\n3. The host serializes this `StatelessInput` as schema-prefixed SSZ bytes.\n4. A prover runs the guest program on the serialized `StatelessInput`.\n5. The guest validates the witness and executes the payload against\n   witness-backed state. It then returns `StatelessValidationResult`.\n\n#### Stateless input and output\n\nThe top-level guest input is private prover input:\n\n```python\nclass StatelessInput:\n    new_payload_request: NewPayloadRequest\n    witness: ExecutionWitness\n    chain_id: U64\n    public_keys: Tuple[Bytes, ...]\n```\n\nThe guest output is public:\n\n```python\nclass StatelessValidationResult:\n    new_payload_request_root: Hash32\n    successful_validation: bool\n    chain_id: U64\n    schema_id: U16\n```\n\nAt this level:\n\n- `new_payload_request` is the Engine API payload data supplied by the\n  consensus layer.\n- `witness` is the account, storage, code, and ancestor-header data needed to\n  execute the payload without local EL state.\n- `chain_id` identifies the chain used during payload validation and execution.\n- `public_keys` contains one 65-byte uncompressed secp256k1 public key for\n  each transaction signer. The keys use the transaction order from the payload.\n  Optimized guests can use these keys to avoid public-key recovery, but\n  transaction signatures and supplied public keys MUST still be verified.\n- `schema_id` identifies the exact input schema and fork rules that the guest\n  executed.\n\nIf the guest cannot decode the input, it returns a failed result with sentinel\nvalues. The request root, chain ID, and schema ID are all zero in this result.\nIf validation fails after decoding, the result retains the decoded request root,\nchain ID, and schema ID.\n\nThe `NewPayloadRequest` commits to the payload, blob versioned hashes,\n`parent_beacon_block_root`, and typed execution requests.\nThe `versioned_hashes` field carries the versioned hashes introduced by\n[EIP-4844](./eip-4844.md). The typed deposit, withdrawal, and consolidation\nrequests are specified by [EIP-6110](./eip-6110.md),\n[EIP-7002](./eip-7002.md), and [EIP-7251](./eip-7251.md), respectively.\nBuilder deposit and exit requests are specified by\n[EIP-8282](./eip-8282.md).\nThe `block_access_list` field in `ExecutionPayload` is the block-level access\nlist defined by [EIP-7928](./eip-7928.md).\n\n```python\nclass NewPayloadRequest:\n    execution_payload: ExecutionPayload\n    versioned_hashes: Tuple[VersionedHash, ...]\n    parent_beacon_block_root: Root\n    execution_requests: ExecutionRequests\n\n\nclass ExecutionPayload:\n    parent_hash: Hash32\n    fee_recipient: Address\n    state_root: Root\n    receipts_root: Root\n    logs_bloom: Bloom\n    prev_randao: Bytes32\n    block_number: Uint\n    gas_limit: Uint\n    gas_used: Uint\n    timestamp: U256\n    extra_data: Bytes\n    base_fee_per_gas: Uint\n    block_hash: Hash32\n    transactions: Tuple[Bytes, ...]\n    withdrawals: Tuple[Withdrawal, ...]\n    blob_gas_used: U64\n    excess_blob_gas: U64\n    block_access_list: Bytes\n    slot_number: U64\n```\n\nThe execution requests are represented as typed containers, matching the\nconsensus-layer specs:\n\n```python\nclass DepositRequest:\n    pubkey: Bytes48\n    withdrawal_credentials: Bytes32\n    amount: U64\n    signature: Bytes96\n    index: U64\n\n\nclass WithdrawalRequest:\n    source_address: Address\n    validator_pubkey: Bytes48\n    amount: U64\n\n\nclass ConsolidationRequest:\n    source_address: Address\n    source_pubkey: Bytes48\n    target_pubkey: Bytes48\n\n\nclass BuilderDepositRequest:\n    pubkey: Bytes48\n    withdrawal_credentials: Bytes32\n    amount: U64\n    signature: Bytes96\n\n\nclass BuilderExitRequest:\n    source_address: Address\n    pubkey: Bytes48\n\n\nclass ExecutionRequests:\n    deposits: Tuple[DepositRequest, ...]\n    withdrawals: Tuple[WithdrawalRequest, ...]\n    consolidations: Tuple[ConsolidationRequest, ...]\n    builder_deposits: Tuple[BuilderDepositRequest, ...]\n    builder_exits: Tuple[BuilderExitRequest, ...]\n```\n\nThe remaining top-level field defines the witness consumed by the guest:\n\n```python\nclass ExecutionWitness:\n    state: Tuple[Bytes, ...]\n    codes: Tuple[Bytes, ...]\n    headers: Tuple[Bytes, ...]\n```\n\nThe `ExecutionWitness` fields have the following roles:\n\n- `state`: RLP-encoded account and storage trie-node preimages needed during\n  execution and state-root recomputation.\n- `codes`: bytecodes required for code reads from the pre-state. Code created\n  in the block being executed is not included because the guest observes it\n  during re-execution.\n- `headers`: RLP-encoded parent and ancestor headers, ordered by block number\n  and ending at the payload parent. These headers provide the parent state root\n  and the recent block hashes used by `BLOCKHASH` and system-contract logic.\n  The guest checks that the headers form a contiguous chain.\n\n#### Guest validation\n\nThe guest entry point decodes schema-prefixed SSZ input and runs stateless\npayload validation. It always serializes a result, including for invalid input.\n\n```python\ndef _default_failed_stateless_output() -> StatelessValidationResult:\n    return StatelessValidationResult(\n        new_payload_request_root=Hash32(b\"\\0\" * 32),\n        successful_validation=False,\n        chain_id=U64(0),\n        schema_id=U16(0),\n    )\n\n\ndef run_stateless_guest(input_bytes: Bytes) -> Bytes:\n    try:\n        stateless_input = deserialize_stateless_input(input_bytes)\n    except Exception:\n        stateless_output = _default_failed_stateless_output()\n    else:\n        stateless_output = verify_stateless_new_payload(stateless_input)\n    return serialize_stateless_output(stateless_output)\n```\n\nThe main validation path first computes the public payload-request commitment.\nIt then validates the header witness and creates a `WitnessState`. Finally, it\nuses the same `new_payload` path as the execution engine.\n\nThe reference implementation has one implementation for each fork. Thus, its\nAmsterdam guest does not compare the payload timestamp with fork activation\ndata. Production implementations MUST perform this comparison.\n\n```python\ndef compute_new_payload_request_root(\n    stateless_input: StatelessInput,\n) -> Hash32:\n    ssz_npr = _new_payload_request_to_ssz(stateless_input.new_payload_request)\n    return Hash32(ssz_npr.hash_tree_root())\n\n\ndef validate_headers(\n    encoded_headers: Tuple[Bytes, ...],\n) -> Tuple[List[Header | PreviousForkHeader], List[Hash32]]:\n    assert len(encoded_headers) <= 256\n    headers = [_decode_header(header) for header in encoded_headers]\n    block_hashes = [keccak256(header) for header in encoded_headers]\n    for i in range(1, len(headers)):\n        if headers[i].parent_hash != block_hashes[i - 1]:\n            raise Exception(\"Witness headers are not contiguous\")\n    return headers, block_hashes\n\n\ndef verify_stateless_new_payload(\n    stateless_input: StatelessInput,\n) -> StatelessValidationResult:\n    new_payload_request_root = compute_new_payload_request_root(\n        stateless_input\n    )\n    witness = stateless_input.witness\n\n    try:\n        decoded_headers, block_hashes = validate_headers(witness.headers)\n        parent_header = decoded_headers[-1]\n\n        chain_context = ChainContext(\n            chain_id=stateless_input.chain_id,\n            block_hashes=block_hashes,\n            parent_header=parent_header,\n        )\n\n        pre_state = WitnessState(\n            _node_db=build_node_db(witness.state),\n            _state_root=parent_header.state_root,\n            _code_db=build_code_db(witness.codes),\n        )\n\n        execute_new_payload_request(\n            stateless_input.new_payload_request,\n            pre_state,\n            chain_context,\n            transaction_public_keys=stateless_input.public_keys,\n        )\n        successful_validation = True\n    except Exception:\n        successful_validation = False\n\n    return StatelessValidationResult(\n        new_payload_request_root=new_payload_request_root,\n        successful_validation=successful_validation,\n        chain_id=stateless_input.chain_id,\n        schema_id=U16(STATELESS_INPUT_SCHEMA_ID),\n    )\n```\n\n`WitnessState` is the stateless replacement for a local pre-state database. It\nserves account, storage, and code reads from the witness and computes the\npost-state root from the execution diff:\n\n```python\nclass WitnessState:\n    _node_db: Dict[Bytes, Bytes]\n    _state_root: Root\n    _code_db: Dict[Hash32, Bytes]\n\n    def get_account_optional(self, address: Address) -> Optional[Account]: ...\n    def get_storage(self, address: Address, key: Bytes32) -> U256: ...\n    def get_code(self, code_hash: Hash32) -> Bytes: ...\n\n    def compute_state_root_and_trie_changes(\n        self,\n        account_changes: Dict[Address, Optional[Account]],\n        storage_changes: Dict[Address, Dict[Bytes32, U256]],\n    ) -> Tuple[Root, List[InternalNode]]:\n        ...\n```\n\nThe payload execution logic performs the normal payload checks before\nexecuting the block:\n\n```python\ndef execute_new_payload_request(\n    new_payload_request: NewPayloadRequest,\n    pre_state: PreState,\n    chain_context: ChainContext,\n    transaction_public_keys: Optional[Tuple[Bytes, ...]] = None,\n) -> Tuple[BlockDiff, Block]:\n    payload = new_payload_request.execution_payload\n\n    if b\"\" in payload.transactions:\n        raise InvalidBlock(\"Empty transaction in payload\")\n    if not is_valid_block_hash(\n        payload,\n        new_payload_request.parent_beacon_block_root,\n        new_payload_request.execution_requests,\n    ):\n        raise InvalidBlock(\"Invalid block hash\")\n    if not is_valid_versioned_hashes(new_payload_request):\n        raise InvalidBlock(\"Invalid versioned hashes\")\n\n    block = _payload_block(\n        payload,\n        new_payload_request.parent_beacon_block_root,\n        new_payload_request.execution_requests,\n    )\n    block_diff = execute_block(\n        block,\n        pre_state,\n        chain_context,\n        transaction_public_keys=transaction_public_keys,\n    )\n    return block_diff, block\n```\n\nDuring transaction processing, supplied public keys are verified before deriving\nsender addresses:\n\n```python\ndef recover_sender_from_public_key(\n    chain_id: U64,\n    tx: Transaction,\n    public_key: Bytes,\n) -> Address:\n    if public_key != recover_transaction_public_key(chain_id, tx):\n        raise InvalidSignatureError\n    return _sender_address_from_public_key(public_key)\n```\n\nOptimized guests can avoid full public-key recovery. They MUST still verify that\nthe supplied key validates the transaction signature. The key MUST also match\nthe recovery ID or y-parity bit.\n\n#### Host-side input construction\n\nOn the host side, `build_stateless_input` receives the data gathered during\nblock execution or construction and packages them for the guest:\n\n```python\ndef build_stateless_input(\n    block: Block,\n    *,\n    execution_witness: ExecutionWitness,\n    execution_requests: ExecutionRequests,\n    block_access_list: BlockAccessList,\n    chain_id: U64,\n) -> StatelessInput:\n    ...\n\n    payload = ExecutionPayload(\n        ...,\n        block_access_list=Bytes(rlp.encode(block_access_list)),\n        slot_number=header.slot_number,\n    )\n\n    new_payload = NewPayloadRequest(\n        execution_payload=payload,\n        versioned_hashes=tuple(versioned_hashes),\n        parent_beacon_block_root=header.parent_beacon_block_root,\n        execution_requests=execution_requests,\n    )\n\n    return StatelessInput(\n        new_payload_request=new_payload,\n        witness=execution_witness,\n        chain_id=chain_id,\n        public_keys=tuple(public_keys),\n    )\n```\n\nThe execution witness is built from the block-level read/write tracker and\npre-state trie data. ELs already use this tracker to construct block access\nlists (BALs). Conceptually, witness construction:\n\n1. collects the parent header and any older ancestors touched by `BLOCKHASH`.\n2. collects pre-state bytecode reads.\n3. captures account and storage trie nodes needed for all reads and writes.\n4. captures potential sibling nodes that branch compression requires during\n   post-state root calculation.\n\n```python\ndef build_execution_witness(\n    block_state: BlockState,\n    expected_post_state_root: Root,\n    pre_state_accounts_data: Trie[Address, Optional[Account]],\n    pre_state_storages_data: Dict[Address, Trie[Bytes32, U256]],\n    blockchain_headers: Optional[List[Bytes]] = None,\n) -> ExecutionWitness:\n    ancestor_headers = get_witness_ancestors(\n        blockchain_headers if blockchain_headers is not None else [],\n        block_state.oldest_ancestor_offset,\n    )\n    codes = get_witness_codes(block_state.code_reads, block_state.pre_state)\n\n    incr_storage_mpts = _build_pre_state_storage_mpts(pre_state_storages_data)\n    incr_account_mpt = _build_pre_state_account_mpt(\n        pre_state_accounts_data, incr_storage_mpts\n    )\n\n    all_storage_accesses = _collect_storage_accesses(block_state)\n    _capture_pre_state_storage_nodes(incr_storage_mpts, all_storage_accesses)\n    _apply_storage_writes(incr_storage_mpts, block_state.storage_writes)\n\n    all_dirty_accounts = _get_all_dirty_accounts(block_state)\n    _capture_pre_state_account_nodes(\n        incr_account_mpt,\n        block_state.account_reads,\n        all_dirty_accounts,\n    )\n    _apply_account_writes(\n        incr_account_mpt,\n        incr_storage_mpts,\n        block_state,\n        all_dirty_accounts,\n    )\n\n    assert mpt_root(incr_account_mpt) == expected_post_state_root\n\n    accessed_nodes = _collect_accessed_nodes(\n        incr_account_mpt, incr_storage_mpts\n    )\n\n    return ExecutionWitness(\n        state=tuple(sorted(accessed_nodes.values())),\n        codes=tuple(codes),\n        headers=tuple(ancestor_headers),\n    )\n```\n\n#### SSZ encoding\n\nThe host serializes a `StatelessInput` by prefixing the SSZ bytes with a\ntwo-byte schema ID. The high byte identifies the fork, and the low byte\nidentifies the schema revision. Amsterdam revision 1 uses schema ID `0x1501`.\n\n```python\nclass ProtocolFork(IntEnum):\n    ...\n    Amsterdam = 0x15\n\n\nSTATELESS_INPUT_SCHEMA_FORK_INDEX = ProtocolFork.Amsterdam\nSTATELESS_INPUT_SCHEMA_REVISION = 0x01\nSTATELESS_INPUT_SCHEMA_ID = (\n    STATELESS_INPUT_SCHEMA_FORK_INDEX << 8\n) | STATELESS_INPUT_SCHEMA_REVISION\nSTATELESS_INPUT_SCHEMA_ID_SIZE = 2\nSTATELESS_INPUT_SCHEMA_ID_BYTES = STATELESS_INPUT_SCHEMA_ID.to_bytes(\n    STATELESS_INPUT_SCHEMA_ID_SIZE,\n    \"big\",\n)\n\n\ndef serialize_stateless_input(\n    stateless_input: StatelessInput,\n) -> Bytes:\n    ssz_obj = stateless_input_to_ssz(stateless_input)\n    return Bytes(\n        STATELESS_INPUT_SCHEMA_ID_BYTES + bytes(ssz_obj.encode_bytes())\n    )\n\n\ndef deserialize_stateless_input(data: Bytes) -> StatelessInput:\n    if len(data) < STATELESS_INPUT_SCHEMA_ID_SIZE:\n        raise ValueError(\"Stateless input is missing schema id\")\n    schema_id = int.from_bytes(\n        data[:STATELESS_INPUT_SCHEMA_ID_SIZE],\n        \"big\",\n    )\n    if schema_id != STATELESS_INPUT_SCHEMA_ID:\n        raise ValueError(\n            f\"Unsupported stateless input schema id: 0x{schema_id:04x}\"\n        )\n    ssz_obj = SSZStatelessInput.decode_bytes(\n        data[STATELESS_INPUT_SCHEMA_ID_SIZE:]\n    )\n    return ssz_to_stateless_input(ssz_obj)\n```\n\nThe guest output is an SSZ-encoded `SSZStatelessValidationResult`. Its\n`schema_id` field reports the exact input schema that the guest executed.\n\nThe progressive containers and lists follow [EIP-7688](./eip-7688.md).\nProgressive lists and progressive byte lists do not use fixed capacity\nconstants. The schema keeps these fixed bounds and vector sizes:\n\n| Bound | Value |\n| - | - |\n| `MAX_EXTRA_DATA_BYTES` | `32` |\n| `MAX_WITNESS_HEADERS` | `256` |\n| `MAX_BYTES_PER_CODE` | `2**16` |\n| `MAX_BYTES_PER_HEADER` | `2**10` |\n| `MAX_BYTES_PER_WITNESS_NODE` | `2**10` |\n| `PUBLIC_KEY_BYTES` | `65` |\n\nThe SSZ schema mirrors the dataclasses:\n\n```python\nclass SSZWithdrawal(Container):\n    index: uint64\n    validator_index: uint64\n    address: ByteVector[20]\n    amount: uint64\n\n\nclass SSZExecutionPayload(\n    ProgressiveContainer(active_fields=[1] * 19)\n):\n    parent_hash: Bytes32\n    fee_recipient: ByteVector[20]\n    state_root: Bytes32\n    receipts_root: Bytes32\n    logs_bloom: ByteVector[256]\n    prev_randao: Bytes32\n    block_number: uint64\n    gas_limit: uint64\n    gas_used: uint64\n    timestamp: uint64\n    extra_data: ByteList[MAX_EXTRA_DATA_BYTES]\n    base_fee_per_gas: uint256\n    block_hash: Bytes32\n    transactions: ProgressiveList[ProgressiveByteList]\n    withdrawals: ProgressiveList[SSZWithdrawal]\n    blob_gas_used: uint64\n    excess_blob_gas: uint64\n    block_access_list: ProgressiveByteList\n    slot_number: uint64\n\n\nclass SSZDepositRequest(Container):\n    pubkey: ByteVector[48]\n    withdrawal_credentials: Bytes32\n    amount: uint64\n    signature: ByteVector[96]\n    index: uint64\n\n\nclass SSZWithdrawalRequest(Container):\n    source_address: ByteVector[20]\n    validator_pubkey: ByteVector[48]\n    amount: uint64\n\n\nclass SSZConsolidationRequest(Container):\n    source_address: ByteVector[20]\n    source_pubkey: ByteVector[48]\n    target_pubkey: ByteVector[48]\n\n\nclass SSZBuilderDepositRequest(Container):\n    pubkey: ByteVector[48]\n    withdrawal_credentials: Bytes32\n    amount: uint64\n    signature: ByteVector[96]\n\n\nclass SSZBuilderExitRequest(Container):\n    source_address: ByteVector[20]\n    pubkey: ByteVector[48]\n\n\nclass SSZExecutionRequests(\n    ProgressiveContainer(active_fields=[1] * 5)\n):\n    deposits: ProgressiveList[SSZDepositRequest]\n    withdrawals: ProgressiveList[SSZWithdrawalRequest]\n    consolidations: ProgressiveList[SSZConsolidationRequest]\n    builder_deposits: ProgressiveList[SSZBuilderDepositRequest]\n    builder_exits: ProgressiveList[SSZBuilderExitRequest]\n\n\nclass SSZNewPayloadRequest(Container):\n    execution_payload: SSZExecutionPayload\n    versioned_hashes: ProgressiveList[Bytes32]\n    parent_beacon_block_root: Bytes32\n    execution_requests: SSZExecutionRequests\n\n\nclass SSZExecutionWitness(Container):\n    state: ProgressiveList[ByteList[MAX_BYTES_PER_WITNESS_NODE]]\n    codes: ProgressiveList[ByteList[MAX_BYTES_PER_CODE]]\n    headers: SSZList[ByteList[MAX_BYTES_PER_HEADER], MAX_WITNESS_HEADERS]\n\n\nclass SSZStatelessInput(Container):\n    new_payload_request: SSZNewPayloadRequest\n    witness: SSZExecutionWitness\n    chain_id: uint64\n    public_keys: ProgressiveList[ByteVector[PUBLIC_KEY_BYTES]]\n\n\nclass SSZStatelessValidationResult(Container):\n    new_payload_request_root: Bytes32\n    successful_validation: boolean\n    chain_id: uint64\n    schema_id: uint16\n```\n\n## Rationale\n\n### Path to low-resource validation\n\nThis step moves the network measurably closer to low-resource validation. Stateless, constant-time payload verification breaks the coupling between a node's hardware requirements and the gas limit or state size, lowering the floor for who can meaningfully run a node and improving decentralisation.\n\n### Build operational experience\n\nThe central design choice is to deploy execution proofs as an opt-in feature. Stateless validation, the witness format, and the proof system itself are maturing, but we need operational experience before making execution proofs load-bearing. Treating execution proofs as a non-critical artefact lets the stack mature on a live network — proof sizes, generation latency, verifier throughput, gossip behaviour, prover diversity — without placing any of that on the path of fork choice or attestation. A bug, outage, or poor parameter choice is contained to the nodes that opted in; it cannot fork the chain or affect validators that did not subscribe.\n\n## Backwards Compatibility\n\nThis EIP is fully opt-in and does not change consensus validity rules. Validators that do not enable either mode see no change to their behaviour, their bandwidth, or their attestation duties. Nodes that opt in additionally subscribe to the proof gossip topic, advertise themselves via the `eproof` ENR field, and may run a prover; this affects only their local resource profile.\n\n## Test Cases\n\nConformance tests are maintained in the canonical specification repositories:\n\n- [Execution Layer](https://github.com/ethereum/execution-specs/tree/85fc20ca5937719a854472a87cb48d01ef1dffca/tests/amsterdam/eip8025_optional_proofs)\n- [Consensus Layer](https://github.com/ethereum/consensus-specs/tree/031e521f0a82b0e475ecfc13f79dd251a6284fc2/specs/_features/eip8025)\n\n## Reference Implementation\n\n- [Execution Layer](https://github.com/ethereum/execution-specs/tree/85fc20ca5937719a854472a87cb48d01ef1dffca/src/ethereum/forks/amsterdam)\n\n## Security Considerations\n\n**Gossip surface.** Proofs are carried over a new gossipsub topic with payload size bounded by `MAX_PROOF_SIZE`. Validation, anti-DoS rate limits, and peer scoring for invalid proofs follow the same patterns as other CL gossip topics; a misbehaving peer is bounded and can be downscored.\n\n**Soundness and consensus implications.** This EIP does not wire proof verification into fork choice or any other consensus rule: `process_execution_proof` runs outside the beacon-block state-transition function. A forged proof therefore cannot fork the chain, slash a validator, or otherwise affect consensus state — its effect is bounded to a verifying node's local view of payload validity.\n\n**Liveness and critical-path latency.** Proof generation and verification are off the attestation hot path. Validators must not delay block validation or attestation production while waiting for a proof; if a proof is missing or late, the node attests using the fork choice determined by the execution engine's re-execution of payloads.\n\n**Verifier–prover decentralisation asymmetry.** Stateless, constant-time payload verification lowers the resource floor for validators, but proof generation itself remains demanding: a prover must hold the full EL state used during execution and run a non-trivial proving stack whose cost scales as `O(n log² n)` in the size `n` of the witnessed computation. If the proportion of verifying-only nodes grows faster than the proportion of nodes able to generate proofs, the set of actors who maintain the full EL state and produce proofs may become more concentrated even as overall validator participation broadens.\n\n## Copyright\n\nCopyright and related rights waived via [CC0](../LICENSE.md).\n"
+        },
+        "model": "jev-1.13.0",
+        "questions": {
+          "evm_gas_rule_changes": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"EVM Gas rule changes\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "EVM Gas rule changes",
+                "description": "New EVM gas accounting rules"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No gas accounting changes.",
+              "1": "Existing gas accounting mechanism is updated.",
+              "2": "A new gas accounting mechanism is introduced but it does not affect existing mechanisms nor does it affect existing tests.",
+              "3": "A new gas accounting mechanism is introduced and affects existing mechanisms which in turn affect existing tests.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "state_access_ordering_within_opcode_execution": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"State-access ordering within opcode execution\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "State-access ordering within opcode execution",
+                "description": "Changes *where inside an opcode's execution* state is accessed, or where gas is charged relative to that access. Because a state access is recorded in the block-level access list only if execution had enough gas to reach it, this ordering is consensus-critical: moving it changes the BAL at every gas boundary of every affected opcode.",
+                "notes": [
+                  "Distinct from \"Modified opcodes\", which asks whether an opcode's **result** changed. This row asks about the **path to the result**, which is observable even when the result is identical. An EIP can be 0 on that row and 3 on this one.",
+                  "Score changes **to** the ordering. Do not score the fact that state accesses are observable — they always are.",
+                  "Each boundary must be re-tested against every other dimension that can change the answer (cold/warm, static/non-static, delegated/direct, revert/success), so the case count grows multiplicatively rather than additively. Note this explicitly under Special Considerations."
+                ]
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No change to where state is accessed, or to where gas is charged relative to a state access, within any opcode.",
+              "1": "A single opcode's state-access or gas-charge ordering changes.",
+              "2": "Multiple opcodes' ordering changes, or a new state-accessing operation is introduced whose position in the order must be settled.",
+              "3": "The ordering rule changes for a whole class of state-accessing opcodes at once, or what counts as a recordable state access is redefined — requiring existing BAL vectors to be re-derived across opcodes and forks.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "blob_gas_accounting_changes": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Blob gas accounting changes\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Blob gas accounting changes",
+                "description": "New Blob gas accounting rules which potentially affect pre-existing tests"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No blob gas accounting changes.",
+              "1": "Existing blob gas accounting mechanism is updated.",
+              "2": "A new blob gas accounting mechanism is introduced but it does not affect existing mechanisms nor does it affect existing tests.",
+              "3": "A new blob gas accounting mechanism is introduced and affects existing mechanisms which in turn affect existing tests.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "state_gas_accounting_changes": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"State gas accounting changes\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "State gas accounting changes",
+                "description": "New state gas accounting rules. State gas is the cost of *writing* state, as opposed to accessing or executing it: `StateGasCosts`, `COST_PER_STATE_BYTE`, the block-level state gas budget, and the spill path into execution gas.",
+                "notes": [
+                  "Harder to test than blob gas: the spill path means state gas cannot be metered independently of execution gas, and some costs (e.g. `NEW_ACCOUNT`) are state-dependent."
+                ]
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No state gas accounting changes.",
+              "1": "An existing state gas cost or `STATE_BYTES_PER_*` rate is adjusted.",
+              "2": "A new state-gas-charging site is introduced, or the block-level state gas budget or reservoir allocation is modified.",
+              "3": "A new state gas charging mechanism is introduced, or the spill interaction between state gas and execution gas is modified, affecting existing gas tests.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "new_evm_gas_refund": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"New EVM gas refund\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "New EVM gas refund",
+                "description": "New gas-refund mechanism"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No new gas-refund mechanisms are introduced.",
+              "1": "A new simple gas-refund mechanism is introduced that does not affect either existing tests or existing gas-refund mechanisms.",
+              "2": "A new complex gas-refund mechanism is introduced or a simple mechanism that affects existing tests or existing gas-refund mechanisms.",
+              "3": "A new complex gas-refund mechanism is introduced that affects existing tests or existing gas-refund mechanisms.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "patterns_affecting_pre_existing_tests": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Patterns affecting pre-existing tests\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Patterns affecting pre-existing tests",
+                "description": "Implements a new validation mechanism or rule that translates in reworking pre-existing tests"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No pre-existing tests are affected by this change.",
+              "1": "Minor subset of existing tests are affected by this change.",
+              "2": "Considerable subset of existing tests are affected by this change but involves only a contrived category of tests.",
+              "3": "Major subset of existing tests are affected, including diverse category of tests (benchmarks, static, multiple forks, etc.).",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "new_invariant_on_pre_existing_tests": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"New invariant on pre-existing tests\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "New invariant on pre-existing tests",
+                "description": "Tests that are **not about this EIP** must nonetheless assert something this EIP produces. Their logic does not change; they gain a new thing to check.",
+                "notes": [
+                  "Paired with the row above, and easy to confuse with it. \"Patterns affecting pre-existing tests\" asks whether existing tests must be **reworked**; this row asks whether they must **additionally assert something new**. Score both — an EIP can be low on one and high on the other."
+                ]
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "Pre-existing tests assert nothing new.",
+              "1": "A narrow, contrived category of pre-existing tests gains a new assertion.",
+              "2": "A broad category gains a new assertion, applied mechanically.",
+              "3": "Every test in the fork gains the assertion regardless of what it tests, and pre-fork vectors must be re-derived to satisfy it.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "transition_tool_interface_changes": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Transition-tool interface changes\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Transition-tool interface changes",
+                "description": "Modifies or adds new fields to the transition tool interface.",
+                "notes": [
+                  "Special consideration must be paid to this section if the EIP introduces a mechanism that requires the state transition tool to be aware whether the block it is processing is the fork-activation block."
+                ]
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No modifications to the transition tool interface are required.",
+              "1": "A single new field needs to be introduced to the transition tool interface.",
+              "2": "Multiple new fields or a new mechanism has to be introduced to the transition tool interface.",
+              "3": "Multiple new fields and a new mechanism has to be introduced to the transition tool interface.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "new_test_framework_primitives": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"New test-framework primitives\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "New test-framework primitives",
+                "description": "Requires new abstractions in the test framework itself — expectation types, modifiers, helpers — beyond writing test functions with what already exists."
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "Existing test primitives suffice.",
+              "1": "Existing primitives need minor extension.",
+              "2": "New expectation or modifier primitives are required, reusable within this EIP's own test suite.",
+              "3": "New framework-level primitives are required that become a permanent part of the framework and are used by other EIPs' tests.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "cryptography": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Cryptography\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Cryptography",
+                "description": "Introduces new cryptography mechanisms or modifies existing functionality that involves cryptography"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No cryptography mechanisms are introduced.",
+              "1": "A new cryptography mechanism is introduced but it is a well known mechanism that is known to have vast resources to aid on its testing.",
+              "2": "Multiple new cryptography mechanisms are introduced that are well-known or a single but novel mechanism is introduced that is either untested or has limited resources.",
+              "3": "Multiple new cryptography mechanisms are introduced and at least one of them is a novel mechanism.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "edge_boundary_conditions": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Edge/boundary conditions\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Edge/boundary conditions",
+                "description": "Feature contains edge/boundary conditions."
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No discernible edge cases or boundary conditions are introduced.",
+              "1": "A single edge-case or boundary-condition prone mechanism is introduced.",
+              "2": "Multiple edge-case or boundary-condition prone mechanisms are introduced, but none of them requires an elevated number of cases to test.",
+              "3": "Multiple edge-case or boundary-condition prone mechanisms are introduced and at least one of them requires an elevated number of cases to test.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "block_syncing_changes": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Block syncing changes\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Block syncing changes",
+                "description": "Modifies block RLP validation mechanisms that require test client syncing."
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No new RLP validation mechanism is introduced.",
+              "1": "A single simple RLP validation mechanism is introduced.",
+              "2": "Multiple simple RLP validation mechanisms are introduced or a single complex one.",
+              "3": "Multiple RLP validation mechanisms are introduced and at least one of them is deemed complex.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "engine_api_changes": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Engine API changes\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Engine API changes",
+                "description": "Introduces new fields to the Engine API directives"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No new fields or communication mechanisms are introduced to the Engine API.",
+              "1": "A single new field is introduced in one of the Engine API endpoints.",
+              "2": "Multiple fields are introduced to one or multiple Engine API end points, or a new Engine API end-point is introduced.",
+              "3": "Multiple fields are introduced to one or multiple Engine API end points and a new Engine API end-point is introduced.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "added_system_contracts": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Added system contracts\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Added system contracts",
+                "description": "Introduces new system contract, stateful or not"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No new system contracts are introduced.",
+              "1": "A new system contract is introduced that is not stateful nor does it trigger a new system action (e.g. requests to the consensus layer).",
+              "2": "Multiple new system contracts are introduced or a single new system contract that is either stateful or triggers a new system action (e.g. requests to the consensus layer).",
+              "3": "Multiple new system contracts are introduced and at least one of them is either stateful or triggers a new system action (e.g. requests to the consensus layer).",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "modified_system_contracts": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Modified system contracts\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Modified system contracts",
+                "description": "Modifies pre-existing system contracts"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No modifications to pre-existing system contracts are introduced, directly or indirectly.",
+              "1": "Does not directly modify any system contract, but its behavior has minor indirect effects on one or more system contracts.",
+              "2": "Does not directly modify any system contract, but its behavior has major indirect effects on one or more system contracts.",
+              "3": "At least one pre-existing system contract code or state is modified, which would involve irregular state transition or a similarly complex transition methodology.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "added_opcodes": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Added opcodes\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Added opcodes",
+                "description": "Introduces new opcodes",
+                "notes": [
+                  "Cryptography opcodes are not considered complex by default. Refer to the \"Cryptography\" section for a separate assessment."
+                ]
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No new opcodes are introduced.",
+              "1": "A new simple opcode is introduced (no data portion, no complex stack mechanics, and a constant gas cost).",
+              "2": "Multiple new simple opcodes are introduced, or a single new complex opcode is introduced (has data portion, or complex stack mechanics, or a dynamic gas cost).",
+              "3": "Multiple new opcodes are introduced, and at least one of them is complex (has data portion, or complex stack mechanics, or a dynamic gas cost).",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "modified_opcodes": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Modified opcodes\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Modified opcodes",
+                "description": "Modifies pre-existing opcodes"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No pre-existing opcode modifications are introduced.",
+              "3": "At least one pre-existing opcode's behavior is modified (not including gas changes) or a pre-existing opcode is deprecated.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "added_precompiles": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Added precompiles\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Added precompiles",
+                "description": "Introduces new precompiles",
+                "notes": [
+                  "Cryptography precompiles are not considered complex by default. Refer to the \"Cryptography\" for a separate assessment."
+                ]
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No new precompiles are introduced.",
+              "1": "A new simple precompile is introduced (constant input length, constant gas cost).",
+              "2": "Multiple new simple precompiles are introduced, or a single new complex precompile is introduced (dynamic input length or dynamic gas cost).",
+              "3": "Multiple new precompiles are introduced, and at least one of them is complex (dynamic input length or dynamic gas cost).",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "modified_precompiles": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Modified precompiles\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Modified precompiles",
+                "description": "Modifies pre-existing precompiles logic or gas-accounting"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No pre-existing precompiles are modified.",
+              "1": "At least one pre-existing precompile has its gas schedule modified.",
+              "2": "Multiple pre-existing precompiles have their gas schedule modified, or a single pre-existing precompile has its behavior modified.",
+              "3": "The behavior of multiple pre-existing precompiles, or a single complex pre-existing precompile modified.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "encoding_changes_rlp_ssz": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Encoding changes (RLP/SSZ)\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Encoding changes (RLP/SSZ)",
+                "description": "Introduces encoding changes at the transaction/block/interfaces level",
+                "notes": [
+                  "\"Interfaces level\" includes the Engine API. Score an Engine API encoding change (e.g. JSON -> SSZ) here."
+                ]
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No encoding changes are introduced at the transaction, block, or interfaces levels.",
+              "3": "An encoding change is introduced at transaction, block or interfaces level (e.g. RLP -> SSZ).",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "new_transaction_types": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"New transaction types\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "New transaction types",
+                "description": "Introduces a new transaction type"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No new transaction types are introduced.",
+              "3": "A new transaction type is introduced.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "new_or_modified_transaction_validity_mechanisms": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"New or modified transaction validity mechanisms\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "New or modified transaction validity mechanisms",
+                "description": "Creates new or modifies pre-existing transaction types' validation mechanisms"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No changes are introduced to the validity rules of existing transaction types or to their intrinsic gas cost calculation.",
+              "1": "Minor adjustments are introduced to validity rules or intrinsic gas cost calculation, but they do not significantly affect existing tests.",
+              "2": "Changes to validity rules or intrinsic gas cost calculation affect existing tests, but require only limited updates to test cases and no redesign of the testing infrastructure.",
+              "3": "Changes to validity rules or intrinsic gas cost calculation require extensive rework or redesign of the tests or testing infrastructure.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "new_block_header_fields": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"New block / header fields\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "New block / header fields",
+                "description": "Introduces new block or block header fields"
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No new block or header fields are introduced.",
+              "3": "A new block or header field is introduced.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "new_fork_activation_mechanism": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"New fork activation mechanism\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "New fork activation mechanism",
+                "description": "Modifies state, internal variables, or similar, at the fork activation block",
+                "notes": [
+                  "Initialization of new internal variable is not considered a modification."
+                ]
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No state modifications, internal variables or similar are modified at the fork activation block.",
+              "3": "Either a state modification or internal variables are modified at the fork activation block.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "performance_risks": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Performance risks\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Performance risks",
+                "description": "Introduces or modifies mechanisms and requires performance validation."
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No new mechanisms are introduced that require performance validation.",
+              "1": "The introduced mechanisms can be benchmarked in isolation and do not affect existing performance behavior.",
+              "2": "The introduced mechanisms cannot be fully benchmarked in isolation, but they only have a limited impact on the existing performance benchmarks.",
+              "3": "The introduced mechanisms cannot be benchmarked in isolation and have a substantial impact on existing performance benchmarks or have complex interactions with existing mechanisms.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "security_risks": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Security risks\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Security risks",
+                "description": "Introduces or modifies mechanisms that could compromise the security of the chain, users, validators, or other stakeholders, if not implemented properly."
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "No new mechanisms are introduced that could pose a security risk.",
+              "1": "The introduced mechanisms are self-contained, can be validated in isolation, and do not alter existing invariants that could pose a security risk for any stakeholders.",
+              "2": "The introduced mechanisms interact with a limited number of existing components, slightly altering their security assumptions and requiring a targeted security review or fuzzing.",
+              "3": "The introduced mechanisms interact with multiple existing components, including critical ones, substantially altering their security assumptions and requiring an extensive security review and fuzzing.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "unspecified_behavior_requiring_cross_client_consensus": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Unspecified behavior requiring cross-client consensus\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Unspecified behavior requiring cross-client consensus",
+                "description": "The EIP text does not determine the answer for cases a test can construct. Clients must agree on a previously unspecified detail before tests can be baselined. The cost here is coordination and re-baselining, not test writing.",
+                "notes": [
+                  "Score this from the EIP's state at assessment time: whether it has client implementations, whether it has been through a devnet, and how many open questions remain on its discussion thread."
+                ]
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "The EIP text determines the answer for every case a test could construct.",
+              "1": "A few details are unspecified but have an obvious intended reading.",
+              "2": "Details require client agreement before tests can be written, but they are localized.",
+              "3": "A previously unspecified *and previously unobservable* behavior becomes consensus-critical; expect tests to be re-baselined on each round of EIP amendment.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "cross_eip_interactions": {
+            "type": "choice",
+            "instructions": {
+              "task": "Score the anchor \"Cross-EIP interactions\" of the EIP testing-complexity checklist for the EIP whose complete Markdown source is in `eip_markdown`. Choose the option whose definition best matches what this EIP proposes. The option keys are the numeric scores; a higher score means more testing complexity.",
+              "anchor": {
+                "name": "Cross-EIP interactions",
+                "description": "Introduces or modifies mechanisms that affect other EIPs in either the same or past forks.",
+                "notes": [
+                  "This row is intentionally uncapped, unlike every other anchor: each interacting EIP is another axis of the test matrix, so a ceiling would make a 12-EIP product indistinguishable from a 3-EIP one."
+                ]
+              },
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "0": "Fully self-contained EIP that does not depend on, modify, or conflict with any other EIP.",
+              "1": "The EIP interacts with one or more other EIPs in a non-critical and limited way but can be tested independently for the most part.",
+              "2": "The EIP depends on or modifies one or more other EIPs such that coordinated testing and consideration is required, but interactions are limited in scope and not complex.",
+              "3": "The EIP has strong interdependencies with multiple EIPs, requiring extensive coordinated cross-EIP testing as well as potential re-design of existing test vectors.",
+              "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+            }
+          },
+          "cross_eip_4844": {
+            "type": "choice",
+            "instructions": {
+              "task": "Judge the interaction between the EIP in `eip_markdown` and EIP-4844 under the uncapped rule of the \"Cross-EIP interactions\" anchor. Based only on `eip_markdown`, does the interaction with EIP-4844 require its own coordinated cross-EIP test cases?",
+              "rule": "**+1 for every 3 additional interacting EIPs beyond the first 3**, each of which requires its own coordinated test cases. List the EIPs in the rationale.",
+              "candidate_eip": "EIP-4844",
+              "how_the_candidate_is_referenced": [
+                "referenced explicitly as EIP-4844 in the body text",
+                "listed in the frontmatter `requires` field"
+              ],
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "yes": "`eip_markdown` shows that this EIP depends on, modifies, or changes behavior shared with EIP-4844 such that the two must be tested together; EIP-4844 needs its own coordinated cross-EIP test cases.",
+              "no": "EIP-4844 appears only as background, precedent, an unaffected dependency, or a passing mention; no test cases specific to the interaction with EIP-4844 are needed."
+            }
+          },
+          "cross_eip_6110": {
+            "type": "choice",
+            "instructions": {
+              "task": "Judge the interaction between the EIP in `eip_markdown` and EIP-6110 under the uncapped rule of the \"Cross-EIP interactions\" anchor. Based only on `eip_markdown`, does the interaction with EIP-6110 require its own coordinated cross-EIP test cases?",
+              "rule": "**+1 for every 3 additional interacting EIPs beyond the first 3**, each of which requires its own coordinated test cases. List the EIPs in the rationale.",
+              "candidate_eip": "EIP-6110",
+              "how_the_candidate_is_referenced": [
+                "referenced explicitly as EIP-6110 in the body text",
+                "listed in the frontmatter `requires` field"
+              ],
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "yes": "`eip_markdown` shows that this EIP depends on, modifies, or changes behavior shared with EIP-6110 such that the two must be tested together; EIP-6110 needs its own coordinated cross-EIP test cases.",
+              "no": "EIP-6110 appears only as background, precedent, an unaffected dependency, or a passing mention; no test cases specific to the interaction with EIP-6110 are needed."
+            }
+          },
+          "cross_eip_7002": {
+            "type": "choice",
+            "instructions": {
+              "task": "Judge the interaction between the EIP in `eip_markdown` and EIP-7002 under the uncapped rule of the \"Cross-EIP interactions\" anchor. Based only on `eip_markdown`, does the interaction with EIP-7002 require its own coordinated cross-EIP test cases?",
+              "rule": "**+1 for every 3 additional interacting EIPs beyond the first 3**, each of which requires its own coordinated test cases. List the EIPs in the rationale.",
+              "candidate_eip": "EIP-7002",
+              "how_the_candidate_is_referenced": [
+                "referenced explicitly as EIP-7002 in the body text",
+                "listed in the frontmatter `requires` field"
+              ],
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "yes": "`eip_markdown` shows that this EIP depends on, modifies, or changes behavior shared with EIP-7002 such that the two must be tested together; EIP-7002 needs its own coordinated cross-EIP test cases.",
+              "no": "EIP-7002 appears only as background, precedent, an unaffected dependency, or a passing mention; no test cases specific to the interaction with EIP-7002 are needed."
+            }
+          },
+          "cross_eip_7251": {
+            "type": "choice",
+            "instructions": {
+              "task": "Judge the interaction between the EIP in `eip_markdown` and EIP-7251 under the uncapped rule of the \"Cross-EIP interactions\" anchor. Based only on `eip_markdown`, does the interaction with EIP-7251 require its own coordinated cross-EIP test cases?",
+              "rule": "**+1 for every 3 additional interacting EIPs beyond the first 3**, each of which requires its own coordinated test cases. List the EIPs in the rationale.",
+              "candidate_eip": "EIP-7251",
+              "how_the_candidate_is_referenced": [
+                "referenced explicitly as EIP-7251 in the body text",
+                "listed in the frontmatter `requires` field"
+              ],
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "yes": "`eip_markdown` shows that this EIP depends on, modifies, or changes behavior shared with EIP-7251 such that the two must be tested together; EIP-7251 needs its own coordinated cross-EIP test cases.",
+              "no": "EIP-7251 appears only as background, precedent, an unaffected dependency, or a passing mention; no test cases specific to the interaction with EIP-7251 are needed."
+            }
+          },
+          "cross_eip_7688": {
+            "type": "choice",
+            "instructions": {
+              "task": "Judge the interaction between the EIP in `eip_markdown` and EIP-7688 under the uncapped rule of the \"Cross-EIP interactions\" anchor. Based only on `eip_markdown`, does the interaction with EIP-7688 require its own coordinated cross-EIP test cases?",
+              "rule": "**+1 for every 3 additional interacting EIPs beyond the first 3**, each of which requires its own coordinated test cases. List the EIPs in the rationale.",
+              "candidate_eip": "EIP-7688",
+              "how_the_candidate_is_referenced": [
+                "referenced explicitly as EIP-7688 in the body text",
+                "listed in the frontmatter `requires` field"
+              ],
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "yes": "`eip_markdown` shows that this EIP depends on, modifies, or changes behavior shared with EIP-7688 such that the two must be tested together; EIP-7688 needs its own coordinated cross-EIP test cases.",
+              "no": "EIP-7688 appears only as background, precedent, an unaffected dependency, or a passing mention; no test cases specific to the interaction with EIP-7688 are needed."
+            }
+          },
+          "cross_eip_7732": {
+            "type": "choice",
+            "instructions": {
+              "task": "Judge the interaction between the EIP in `eip_markdown` and EIP-7732 under the uncapped rule of the \"Cross-EIP interactions\" anchor. Based only on `eip_markdown`, does the interaction with EIP-7732 require its own coordinated cross-EIP test cases?",
+              "rule": "**+1 for every 3 additional interacting EIPs beyond the first 3**, each of which requires its own coordinated test cases. List the EIPs in the rationale.",
+              "candidate_eip": "EIP-7732",
+              "how_the_candidate_is_referenced": [
+                "referenced explicitly as EIP-7732 in the body text",
+                "listed in the frontmatter `requires` field"
+              ],
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "yes": "`eip_markdown` shows that this EIP depends on, modifies, or changes behavior shared with EIP-7732 such that the two must be tested together; EIP-7732 needs its own coordinated cross-EIP test cases.",
+              "no": "EIP-7732 appears only as background, precedent, an unaffected dependency, or a passing mention; no test cases specific to the interaction with EIP-7732 are needed."
+            }
+          },
+          "cross_eip_7928": {
+            "type": "choice",
+            "instructions": {
+              "task": "Judge the interaction between the EIP in `eip_markdown` and EIP-7928 under the uncapped rule of the \"Cross-EIP interactions\" anchor. Based only on `eip_markdown`, does the interaction with EIP-7928 require its own coordinated cross-EIP test cases?",
+              "rule": "**+1 for every 3 additional interacting EIPs beyond the first 3**, each of which requires its own coordinated test cases. List the EIPs in the rationale.",
+              "candidate_eip": "EIP-7928",
+              "how_the_candidate_is_referenced": [
+                "referenced explicitly as EIP-7928 in the body text",
+                "listed in the frontmatter `requires` field"
+              ],
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "yes": "`eip_markdown` shows that this EIP depends on, modifies, or changes behavior shared with EIP-7928 such that the two must be tested together; EIP-7928 needs its own coordinated cross-EIP test cases.",
+              "no": "EIP-7928 appears only as background, precedent, an unaffected dependency, or a passing mention; no test cases specific to the interaction with EIP-7928 are needed."
+            }
+          },
+          "cross_eip_8282": {
+            "type": "choice",
+            "instructions": {
+              "task": "Judge the interaction between the EIP in `eip_markdown` and EIP-8282 under the uncapped rule of the \"Cross-EIP interactions\" anchor. Based only on `eip_markdown`, does the interaction with EIP-8282 require its own coordinated cross-EIP test cases?",
+              "rule": "**+1 for every 3 additional interacting EIPs beyond the first 3**, each of which requires its own coordinated test cases. List the EIPs in the rationale.",
+              "candidate_eip": "EIP-8282",
+              "how_the_candidate_is_referenced": [
+                "referenced explicitly as EIP-8282 in the body text",
+                "listed in the frontmatter `requires` field"
+              ],
+              "evaluation_policy": [
+                "The Markdown in `eip_markdown` is the sole evidence for this judgment. Judge only the behavior that this text proposes and supports.",
+                "Do not assume implementation status, devnet history, discussion-thread context, client agreement, dependencies, or any other fact that is not present in `eip_markdown`.",
+                "If an anchor's notes refer to information outside `eip_markdown`, such as devnets, client implementations or discussion threads, treat that information as unavailable and judge from the specification text alone.",
+                "Express uncertainty through the probabilities over the options; never fabricate facts to reach a definite answer."
+              ]
+            },
+            "criteria": {
+              "yes": "`eip_markdown` shows that this EIP depends on, modifies, or changes behavior shared with EIP-8282 such that the two must be tested together; EIP-8282 needs its own coordinated cross-EIP test cases.",
+              "no": "EIP-8282 appears only as background, precedent, an unaffected dependency, or a passing mention; no test cases specific to the interaction with EIP-8282 are needed."
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "raw": {
+        "model": "jev-1.13.0",
+        "answers": {
+          "evm_gas_rule_changes": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 1.0,
+            "probabilities": {
+              "3": 0.0,
+              "4": 0.0,
+              "0": 1.0,
+              "2": 0.0,
+              "1": 0.0
+            }
+          },
+          "state_access_ordering_within_opcode_execution": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.99,
+            "probabilities": {
+              "3": 0.0,
+              "4": 0.0,
+              "0": 1.0,
+              "2": 0.0,
+              "1": 0.0
+            }
+          },
+          "blob_gas_accounting_changes": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 1.0,
+            "probabilities": {
+              "3": 0.0,
+              "1": 0.0,
+              "0": 1.0,
+              "2": 0.0,
+              "4": 0.0
+            }
+          },
+          "state_gas_accounting_changes": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 1.0,
+            "probabilities": {
+              "3": 0.0,
+              "1": 0.0,
+              "0": 1.0,
+              "2": 0.0,
+              "4": 0.0
+            }
+          },
+          "new_evm_gas_refund": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 1.0,
+            "probabilities": {
+              "3": 0.0,
+              "4": 0.0,
+              "0": 1.0,
+              "2": 0.0,
+              "1": 0.0
+            }
+          },
+          "patterns_affecting_pre_existing_tests": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.41,
+            "probabilities": {
+              "3": 0.09,
+              "4": 0.02,
+              "0": 0.52,
+              "2": 0.1,
+              "1": 0.27
+            }
+          },
+          "new_invariant_on_pre_existing_tests": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.79,
+            "probabilities": {
+              "3": 0.01,
+              "4": 0.01,
+              "0": 0.82,
+              "2": 0.08,
+              "1": 0.08
+            }
+          },
+          "transition_tool_interface_changes": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.53,
+            "probabilities": {
+              "3": 0.07,
+              "1": 0.09,
+              "0": 0.62,
+              "2": 0.21,
+              "4": 0.01
+            }
+          },
+          "new_test_framework_primitives": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.54,
+            "probabilities": {
+              "3": 0.03,
+              "1": 0.17,
+              "0": 0.62,
+              "2": 0.17,
+              "4": 0.01
+            }
+          },
+          "cryptography": {
+            "type": "choice",
+            "choice": "1",
+            "confidence": 0.21,
+            "probabilities": {
+              "3": 0.05,
+              "4": 0.03,
+              "0": 0.28,
+              "2": 0.27,
+              "1": 0.37
+            }
+          },
+          "edge_boundary_conditions": {
+            "type": "choice",
+            "choice": "3",
+            "confidence": 0.89,
+            "probabilities": {
+              "3": 0.92,
+              "4": 0.01,
+              "0": 0.0,
+              "2": 0.07,
+              "1": 0.0
+            }
+          },
+          "block_syncing_changes": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.96,
+            "probabilities": {
+              "3": 0.01,
+              "4": 0.0,
+              "0": 0.97,
+              "2": 0.02,
+              "1": 0.0
+            }
+          },
+          "engine_api_changes": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.6,
+            "probabilities": {
+              "3": 0.04,
+              "4": 0.01,
+              "0": 0.68,
+              "2": 0.19,
+              "1": 0.08
+            }
+          },
+          "added_system_contracts": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.99,
+            "probabilities": {
+              "3": 0.0,
+              "4": 0.0,
+              "0": 0.99,
+              "2": 0.01,
+              "1": 0.0
+            }
+          },
+          "modified_system_contracts": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.93,
+            "probabilities": {
+              "3": 0.01,
+              "4": 0.0,
+              "0": 0.94,
+              "2": 0.01,
+              "1": 0.04
+            }
+          },
+          "added_opcodes": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 1.0,
+            "probabilities": {
+              "3": 0.0,
+              "4": 0.0,
+              "0": 1.0,
+              "2": 0.0,
+              "1": 0.0
+            }
+          },
+          "modified_opcodes": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.99,
+            "probabilities": {
+              "3": 0.01,
+              "4": 0.0,
+              "0": 0.99
+            }
+          },
+          "added_precompiles": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 1.0,
+            "probabilities": {
+              "3": 0.0,
+              "4": 0.0,
+              "0": 1.0,
+              "2": 0.0,
+              "1": 0.0
+            }
+          },
+          "modified_precompiles": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 1.0,
+            "probabilities": {
+              "3": 0.0,
+              "4": 0.0,
+              "0": 1.0,
+              "2": 0.0,
+              "1": 0.0
+            }
+          },
+          "encoding_changes_rlp_ssz": {
+            "type": "choice",
+            "choice": "3",
+            "confidence": 0.36,
+            "probabilities": {
+              "3": 0.57,
+              "4": 0.03,
+              "0": 0.4
+            }
+          },
+          "new_transaction_types": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.97,
+            "probabilities": {
+              "3": 0.02,
+              "4": 0.0,
+              "0": 0.98
+            }
+          },
+          "new_or_modified_transaction_validity_mechanisms": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.92,
+            "probabilities": {
+              "3": 0.01,
+              "4": 0.0,
+              "0": 0.95,
+              "2": 0.01,
+              "1": 0.03
+            }
+          },
+          "new_block_header_fields": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.99,
+            "probabilities": {
+              "3": 0.01,
+              "4": 0.0,
+              "0": 0.99
+            }
+          },
+          "new_fork_activation_mechanism": {
+            "type": "choice",
+            "choice": "0",
+            "confidence": 0.99,
+            "probabilities": {
+              "3": 0.0,
+              "4": 0.0,
+              "0": 1.0
+            }
+          },
+          "performance_risks": {
+            "type": "choice",
+            "choice": "2",
+            "confidence": 0.36,
+            "probabilities": {
+              "3": 0.33,
+              "4": 0.01,
+              "0": 0.01,
+              "2": 0.48,
+              "1": 0.17
+            }
+          },
+          "security_risks": {
+            "type": "choice",
+            "choice": "3",
+            "confidence": 0.35,
+            "probabilities": {
+              "3": 0.47,
+              "1": 0.12,
+              "0": 0.01,
+              "2": 0.39,
+              "4": 0.01
+            }
+          },
+          "unspecified_behavior_requiring_cross_client_consensus": {
+            "type": "choice",
+            "choice": "2",
+            "confidence": 0.58,
+            "probabilities": {
+              "3": 0.04,
+              "4": 0.01,
+              "0": 0.03,
+              "2": 0.66,
+              "1": 0.26
+            }
+          },
+          "cross_eip_interactions": {
+            "type": "choice",
+            "choice": "3",
+            "confidence": 0.81,
+            "probabilities": {
+              "3": 0.85,
+              "4": 0.04,
+              "0": 0.0,
+              "2": 0.09,
+              "1": 0.02
+            }
+          },
+          "cross_eip_4844": {
+            "type": "choice",
+            "choice": "yes",
+            "confidence": 0.27,
+            "probabilities": {
+              "yes": 0.64,
+              "no": 0.36
+            }
+          },
+          "cross_eip_6110": {
+            "type": "choice",
+            "choice": "yes",
+            "confidence": 0.19,
+            "probabilities": {
+              "yes": 0.59,
+              "no": 0.41
+            }
+          },
+          "cross_eip_7002": {
+            "type": "choice",
+            "choice": "yes",
+            "confidence": 0.09,
+            "probabilities": {
+              "yes": 0.55,
+              "no": 0.45
+            }
+          },
+          "cross_eip_7251": {
+            "type": "choice",
+            "choice": "yes",
+            "confidence": 0.33,
+            "probabilities": {
+              "yes": 0.66,
+              "no": 0.34
+            }
+          },
+          "cross_eip_7688": {
+            "type": "choice",
+            "choice": "yes",
+            "confidence": 0.25,
+            "probabilities": {
+              "yes": 0.62,
+              "no": 0.38
+            }
+          },
+          "cross_eip_7732": {
+            "type": "choice",
+            "choice": "yes",
+            "confidence": 0.55,
+            "probabilities": {
+              "yes": 0.78,
+              "no": 0.22
+            }
+          },
+          "cross_eip_7928": {
+            "type": "choice",
+            "choice": "yes",
+            "confidence": 0.24,
+            "probabilities": {
+              "yes": 0.62,
+              "no": 0.38
+            }
+          },
+          "cross_eip_8282": {
+            "type": "choice",
+            "choice": "yes",
+            "confidence": 0.4,
+            "probabilities": {
+              "yes": 0.7,
+              "no": 0.3
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 28576,
+          "output_tokens": 1714
+        }
+      }
+    },
+    "scores": {
+      "anchors": [
+        {
+          "id": "evm_gas_rule_changes",
+          "name": "EVM Gas rule changes",
+          "checklist_label": "EVM Gas rule changes",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.0,
+            "4": 0.0,
+            "0": 1.0,
+            "2": 0.0,
+            "1": 0.0
+          },
+          "confidence": 1.0,
+          "criteria": {
+            "0": "No gas accounting changes.",
+            "1": "Existing gas accounting mechanism is updated.",
+            "2": "A new gas accounting mechanism is introduced but it does not affect existing mechanisms nor does it affect existing tests.",
+            "3": "A new gas accounting mechanism is introduced and affects existing mechanisms which in turn affect existing tests.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "state_access_ordering_within_opcode_execution",
+          "name": "State-access ordering within opcode execution",
+          "checklist_label": "State-access ordering within opcode execution",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.0,
+            "4": 0.0,
+            "0": 1.0,
+            "2": 0.0,
+            "1": 0.0
+          },
+          "confidence": 0.99,
+          "criteria": {
+            "0": "No change to where state is accessed, or to where gas is charged relative to a state access, within any opcode.",
+            "1": "A single opcode's state-access or gas-charge ordering changes.",
+            "2": "Multiple opcodes' ordering changes, or a new state-accessing operation is introduced whose position in the order must be settled.",
+            "3": "The ordering rule changes for a whole class of state-accessing opcodes at once, or what counts as a recordable state access is redefined — requiring existing BAL vectors to be re-derived across opcodes and forks.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "blob_gas_accounting_changes",
+          "name": "Blob gas accounting changes",
+          "checklist_label": "Blob gas accounting changes",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.0,
+            "1": 0.0,
+            "0": 1.0,
+            "2": 0.0,
+            "4": 0.0
+          },
+          "confidence": 1.0,
+          "criteria": {
+            "0": "No blob gas accounting changes.",
+            "1": "Existing blob gas accounting mechanism is updated.",
+            "2": "A new blob gas accounting mechanism is introduced but it does not affect existing mechanisms nor does it affect existing tests.",
+            "3": "A new blob gas accounting mechanism is introduced and affects existing mechanisms which in turn affect existing tests.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "state_gas_accounting_changes",
+          "name": "State gas accounting changes",
+          "checklist_label": "State gas accounting changes",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.0,
+            "1": 0.0,
+            "0": 1.0,
+            "2": 0.0,
+            "4": 0.0
+          },
+          "confidence": 1.0,
+          "criteria": {
+            "0": "No state gas accounting changes.",
+            "1": "An existing state gas cost or `STATE_BYTES_PER_*` rate is adjusted.",
+            "2": "A new state-gas-charging site is introduced, or the block-level state gas budget or reservoir allocation is modified.",
+            "3": "A new state gas charging mechanism is introduced, or the spill interaction between state gas and execution gas is modified, affecting existing gas tests.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "new_evm_gas_refund",
+          "name": "New EVM gas refund",
+          "checklist_label": "New EVM gas refund",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.0,
+            "4": 0.0,
+            "0": 1.0,
+            "2": 0.0,
+            "1": 0.0
+          },
+          "confidence": 1.0,
+          "criteria": {
+            "0": "No new gas-refund mechanisms are introduced.",
+            "1": "A new simple gas-refund mechanism is introduced that does not affect either existing tests or existing gas-refund mechanisms.",
+            "2": "A new complex gas-refund mechanism is introduced or a simple mechanism that affects existing tests or existing gas-refund mechanisms.",
+            "3": "A new complex gas-refund mechanism is introduced that affects existing tests or existing gas-refund mechanisms.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "patterns_affecting_pre_existing_tests",
+          "name": "Patterns affecting pre-existing tests",
+          "checklist_label": "Patterns affecting pre-existing tests",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.09,
+            "4": 0.02,
+            "0": 0.52,
+            "2": 0.1,
+            "1": 0.27
+          },
+          "confidence": 0.41,
+          "criteria": {
+            "0": "No pre-existing tests are affected by this change.",
+            "1": "Minor subset of existing tests are affected by this change.",
+            "2": "Considerable subset of existing tests are affected by this change but involves only a contrived category of tests.",
+            "3": "Major subset of existing tests are affected, including diverse category of tests (benchmarks, static, multiple forks, etc.).",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "new_invariant_on_pre_existing_tests",
+          "name": "New invariant on pre-existing tests",
+          "checklist_label": "New invariant on pre-existing tests",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.01,
+            "4": 0.01,
+            "0": 0.82,
+            "2": 0.08,
+            "1": 0.08
+          },
+          "confidence": 0.79,
+          "criteria": {
+            "0": "Pre-existing tests assert nothing new.",
+            "1": "A narrow, contrived category of pre-existing tests gains a new assertion.",
+            "2": "A broad category gains a new assertion, applied mechanically.",
+            "3": "Every test in the fork gains the assertion regardless of what it tests, and pre-fork vectors must be re-derived to satisfy it.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "transition_tool_interface_changes",
+          "name": "Transition-tool interface changes",
+          "checklist_label": "Transition-tool interface changes",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.07,
+            "1": 0.09,
+            "0": 0.62,
+            "2": 0.21,
+            "4": 0.01
+          },
+          "confidence": 0.53,
+          "criteria": {
+            "0": "No modifications to the transition tool interface are required.",
+            "1": "A single new field needs to be introduced to the transition tool interface.",
+            "2": "Multiple new fields or a new mechanism has to be introduced to the transition tool interface.",
+            "3": "Multiple new fields and a new mechanism has to be introduced to the transition tool interface.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "new_test_framework_primitives",
+          "name": "New test-framework primitives",
+          "checklist_label": "New test-framework primitives",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.03,
+            "1": 0.17,
+            "0": 0.62,
+            "2": 0.17,
+            "4": 0.01
+          },
+          "confidence": 0.54,
+          "criteria": {
+            "0": "Existing test primitives suffice.",
+            "1": "Existing primitives need minor extension.",
+            "2": "New expectation or modifier primitives are required, reusable within this EIP's own test suite.",
+            "3": "New framework-level primitives are required that become a permanent part of the framework and are used by other EIPs' tests.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "cryptography",
+          "name": "Cryptography",
+          "checklist_label": "Cryptography-related testing",
+          "score": 1,
+          "choice": "1",
+          "probabilities": {
+            "3": 0.05,
+            "4": 0.03,
+            "0": 0.28,
+            "2": 0.27,
+            "1": 0.37
+          },
+          "confidence": 0.21,
+          "criteria": {
+            "0": "No cryptography mechanisms are introduced.",
+            "1": "A new cryptography mechanism is introduced but it is a well known mechanism that is known to have vast resources to aid on its testing.",
+            "2": "Multiple new cryptography mechanisms are introduced that are well-known or a single but novel mechanism is introduced that is either untested or has limited resources.",
+            "3": "Multiple new cryptography mechanisms are introduced and at least one of them is a novel mechanism.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "edge_boundary_conditions",
+          "name": "Edge/boundary conditions",
+          "checklist_label": "Edge/boundary conditions",
+          "score": 3,
+          "choice": "3",
+          "probabilities": {
+            "3": 0.92,
+            "4": 0.01,
+            "0": 0.0,
+            "2": 0.07,
+            "1": 0.0
+          },
+          "confidence": 0.89,
+          "criteria": {
+            "0": "No discernible edge cases or boundary conditions are introduced.",
+            "1": "A single edge-case or boundary-condition prone mechanism is introduced.",
+            "2": "Multiple edge-case or boundary-condition prone mechanisms are introduced, but none of them requires an elevated number of cases to test.",
+            "3": "Multiple edge-case or boundary-condition prone mechanisms are introduced and at least one of them requires an elevated number of cases to test.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "block_syncing_changes",
+          "name": "Block syncing changes",
+          "checklist_label": "Block syncing changes",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.01,
+            "4": 0.0,
+            "0": 0.97,
+            "2": 0.02,
+            "1": 0.0
+          },
+          "confidence": 0.96,
+          "criteria": {
+            "0": "No new RLP validation mechanism is introduced.",
+            "1": "A single simple RLP validation mechanism is introduced.",
+            "2": "Multiple simple RLP validation mechanisms are introduced or a single complex one.",
+            "3": "Multiple RLP validation mechanisms are introduced and at least one of them is deemed complex.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "engine_api_changes",
+          "name": "Engine API changes",
+          "checklist_label": "Engine API changes",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.04,
+            "4": 0.01,
+            "0": 0.68,
+            "2": 0.19,
+            "1": 0.08
+          },
+          "confidence": 0.6,
+          "criteria": {
+            "0": "No new fields or communication mechanisms are introduced to the Engine API.",
+            "1": "A single new field is introduced in one of the Engine API endpoints.",
+            "2": "Multiple fields are introduced to one or multiple Engine API end points, or a new Engine API end-point is introduced.",
+            "3": "Multiple fields are introduced to one or multiple Engine API end points and a new Engine API end-point is introduced.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "added_system_contracts",
+          "name": "Added system contracts",
+          "checklist_label": "Added system contracts",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.0,
+            "4": 0.0,
+            "0": 0.99,
+            "2": 0.01,
+            "1": 0.0
+          },
+          "confidence": 0.99,
+          "criteria": {
+            "0": "No new system contracts are introduced.",
+            "1": "A new system contract is introduced that is not stateful nor does it trigger a new system action (e.g. requests to the consensus layer).",
+            "2": "Multiple new system contracts are introduced or a single new system contract that is either stateful or triggers a new system action (e.g. requests to the consensus layer).",
+            "3": "Multiple new system contracts are introduced and at least one of them is either stateful or triggers a new system action (e.g. requests to the consensus layer).",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "modified_system_contracts",
+          "name": "Modified system contracts",
+          "checklist_label": "Modified system contracts",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.01,
+            "4": 0.0,
+            "0": 0.94,
+            "2": 0.01,
+            "1": 0.04
+          },
+          "confidence": 0.93,
+          "criteria": {
+            "0": "No modifications to pre-existing system contracts are introduced, directly or indirectly.",
+            "1": "Does not directly modify any system contract, but its behavior has minor indirect effects on one or more system contracts.",
+            "2": "Does not directly modify any system contract, but its behavior has major indirect effects on one or more system contracts.",
+            "3": "At least one pre-existing system contract code or state is modified, which would involve irregular state transition or a similarly complex transition methodology.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "added_opcodes",
+          "name": "Added opcodes",
+          "checklist_label": "Added opcodes",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.0,
+            "4": 0.0,
+            "0": 1.0,
+            "2": 0.0,
+            "1": 0.0
+          },
+          "confidence": 1.0,
+          "criteria": {
+            "0": "No new opcodes are introduced.",
+            "1": "A new simple opcode is introduced (no data portion, no complex stack mechanics, and a constant gas cost).",
+            "2": "Multiple new simple opcodes are introduced, or a single new complex opcode is introduced (has data portion, or complex stack mechanics, or a dynamic gas cost).",
+            "3": "Multiple new opcodes are introduced, and at least one of them is complex (has data portion, or complex stack mechanics, or a dynamic gas cost).",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "modified_opcodes",
+          "name": "Modified opcodes",
+          "checklist_label": "Modified opcodes",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.01,
+            "4": 0.0,
+            "0": 0.99
+          },
+          "confidence": 0.99,
+          "criteria": {
+            "0": "No pre-existing opcode modifications are introduced.",
+            "3": "At least one pre-existing opcode's behavior is modified (not including gas changes) or a pre-existing opcode is deprecated.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "added_precompiles",
+          "name": "Added precompiles",
+          "checklist_label": "Added precompiles",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.0,
+            "4": 0.0,
+            "0": 1.0,
+            "2": 0.0,
+            "1": 0.0
+          },
+          "confidence": 1.0,
+          "criteria": {
+            "0": "No new precompiles are introduced.",
+            "1": "A new simple precompile is introduced (constant input length, constant gas cost).",
+            "2": "Multiple new simple precompiles are introduced, or a single new complex precompile is introduced (dynamic input length or dynamic gas cost).",
+            "3": "Multiple new precompiles are introduced, and at least one of them is complex (dynamic input length or dynamic gas cost).",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "modified_precompiles",
+          "name": "Modified precompiles",
+          "checklist_label": "Modified precompiles",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.0,
+            "4": 0.0,
+            "0": 1.0,
+            "2": 0.0,
+            "1": 0.0
+          },
+          "confidence": 1.0,
+          "criteria": {
+            "0": "No pre-existing precompiles are modified.",
+            "1": "At least one pre-existing precompile has its gas schedule modified.",
+            "2": "Multiple pre-existing precompiles have their gas schedule modified, or a single pre-existing precompile has its behavior modified.",
+            "3": "The behavior of multiple pre-existing precompiles, or a single complex pre-existing precompile modified.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "encoding_changes_rlp_ssz",
+          "name": "Encoding changes (RLP/SSZ)",
+          "checklist_label": "Encoding changes (RLP/SSZ)",
+          "score": 3,
+          "choice": "3",
+          "probabilities": {
+            "3": 0.57,
+            "4": 0.03,
+            "0": 0.4
+          },
+          "confidence": 0.36,
+          "criteria": {
+            "0": "No encoding changes are introduced at the transaction, block, or interfaces levels.",
+            "3": "An encoding change is introduced at transaction, block or interfaces level (e.g. RLP -> SSZ).",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "new_transaction_types",
+          "name": "New transaction types",
+          "checklist_label": "New transaction types",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.02,
+            "4": 0.0,
+            "0": 0.98
+          },
+          "confidence": 0.97,
+          "criteria": {
+            "0": "No new transaction types are introduced.",
+            "3": "A new transaction type is introduced.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "new_or_modified_transaction_validity_mechanisms",
+          "name": "New or modified transaction validity mechanisms",
+          "checklist_label": "New or modified transaction validity mechanisms",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.01,
+            "4": 0.0,
+            "0": 0.95,
+            "2": 0.01,
+            "1": 0.03
+          },
+          "confidence": 0.92,
+          "criteria": {
+            "0": "No changes are introduced to the validity rules of existing transaction types or to their intrinsic gas cost calculation.",
+            "1": "Minor adjustments are introduced to validity rules or intrinsic gas cost calculation, but they do not significantly affect existing tests.",
+            "2": "Changes to validity rules or intrinsic gas cost calculation affect existing tests, but require only limited updates to test cases and no redesign of the testing infrastructure.",
+            "3": "Changes to validity rules or intrinsic gas cost calculation require extensive rework or redesign of the tests or testing infrastructure.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "new_block_header_fields",
+          "name": "New block / header fields",
+          "checklist_label": "New block / header fields",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.01,
+            "4": 0.0,
+            "0": 0.99
+          },
+          "confidence": 0.99,
+          "criteria": {
+            "0": "No new block or header fields are introduced.",
+            "3": "A new block or header field is introduced.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "new_fork_activation_mechanism",
+          "name": "New fork activation mechanism",
+          "checklist_label": "New fork activation mechanism",
+          "score": 0,
+          "choice": "0",
+          "probabilities": {
+            "3": 0.0,
+            "4": 0.0,
+            "0": 1.0
+          },
+          "confidence": 0.99,
+          "criteria": {
+            "0": "No state modifications, internal variables or similar are modified at the fork activation block.",
+            "3": "Either a state modification or internal variables are modified at the fork activation block.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "performance_risks",
+          "name": "Performance risks",
+          "checklist_label": "Performance risks",
+          "score": 2,
+          "choice": "2",
+          "probabilities": {
+            "3": 0.33,
+            "4": 0.01,
+            "0": 0.01,
+            "2": 0.48,
+            "1": 0.17
+          },
+          "confidence": 0.36,
+          "criteria": {
+            "0": "No new mechanisms are introduced that require performance validation.",
+            "1": "The introduced mechanisms can be benchmarked in isolation and do not affect existing performance behavior.",
+            "2": "The introduced mechanisms cannot be fully benchmarked in isolation, but they only have a limited impact on the existing performance benchmarks.",
+            "3": "The introduced mechanisms cannot be benchmarked in isolation and have a substantial impact on existing performance benchmarks or have complex interactions with existing mechanisms.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "security_risks",
+          "name": "Security risks",
+          "checklist_label": "Security risks",
+          "score": 3,
+          "choice": "3",
+          "probabilities": {
+            "3": 0.47,
+            "1": 0.12,
+            "0": 0.01,
+            "2": 0.39,
+            "4": 0.01
+          },
+          "confidence": 0.35,
+          "criteria": {
+            "0": "No new mechanisms are introduced that could pose a security risk.",
+            "1": "The introduced mechanisms are self-contained, can be validated in isolation, and do not alter existing invariants that could pose a security risk for any stakeholders.",
+            "2": "The introduced mechanisms interact with a limited number of existing components, slightly altering their security assumptions and requiring a targeted security review or fuzzing.",
+            "3": "The introduced mechanisms interact with multiple existing components, including critical ones, substantially altering their security assumptions and requiring an extensive security review and fuzzing.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "unspecified_behavior_requiring_cross_client_consensus",
+          "name": "Unspecified behavior requiring cross-client consensus",
+          "checklist_label": "Unspecified behavior requiring cross-client consensus",
+          "score": 2,
+          "choice": "2",
+          "probabilities": {
+            "3": 0.04,
+            "4": 0.01,
+            "0": 0.03,
+            "2": 0.66,
+            "1": 0.26
+          },
+          "confidence": 0.58,
+          "criteria": {
+            "0": "The EIP text determines the answer for every case a test could construct.",
+            "1": "A few details are unspecified but have an obvious intended reading.",
+            "2": "Details require client agreement before tests can be written, but they are localized.",
+            "3": "A previously unspecified *and previously unobservable* behavior becomes consensus-critical; expect tests to be re-baselined on each round of EIP amendment.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          }
+        },
+        {
+          "id": "cross_eip_interactions",
+          "name": "Cross-EIP interactions",
+          "checklist_label": "Cross-EIP interactions (uncapped)",
+          "score": 4,
+          "choice": "3",
+          "probabilities": {
+            "3": 0.85,
+            "4": 0.04,
+            "0": 0.0,
+            "2": 0.09,
+            "1": 0.02
+          },
+          "confidence": 0.81,
+          "criteria": {
+            "0": "Fully self-contained EIP that does not depend on, modify, or conflict with any other EIP.",
+            "1": "The EIP interacts with one or more other EIPs in a non-critical and limited way but can be tested independently for the most part.",
+            "2": "The EIP depends on or modifies one or more other EIPs such that coordinated testing and consideration is required, but interactions are limited in scope and not complex.",
+            "3": "The EIP has strong interdependencies with multiple EIPs, requiring extensive coordinated cross-EIP testing as well as potential re-design of existing test vectors.",
+            "4": "Exceptional circumstances only. A score of 4 may be used in exceptional circumstances where the complexity or impact exceeds the defined anchors."
+          },
+          "base_score": 3,
+          "bonus": 1
+        }
+      ],
+      "cross_eip": {
+        "anchor_id": "cross_eip_interactions",
+        "rule": {
+          "increment": 1,
+          "per_additional": 3,
+          "beyond_first": 3,
+          "text": "**+1 for every 3 additional interacting EIPs beyond the first 3**, each of which requires its own coordinated test cases. List the EIPs in the rationale."
+        },
+        "candidates": [
+          {
+            "eip": 4844,
+            "question_id": "cross_eip_4844",
+            "referenced_via": [
+              "body",
+              "requires"
+            ],
+            "requires_coordinated_tests": true,
+            "choice": "yes",
+            "probabilities": {
+              "yes": 0.64,
+              "no": 0.36
+            },
+            "confidence": 0.27
+          },
+          {
+            "eip": 6110,
+            "question_id": "cross_eip_6110",
+            "referenced_via": [
+              "body",
+              "requires"
+            ],
+            "requires_coordinated_tests": true,
+            "choice": "yes",
+            "probabilities": {
+              "yes": 0.59,
+              "no": 0.41
+            },
+            "confidence": 0.19
+          },
+          {
+            "eip": 7002,
+            "question_id": "cross_eip_7002",
+            "referenced_via": [
+              "body",
+              "requires"
+            ],
+            "requires_coordinated_tests": true,
+            "choice": "yes",
+            "probabilities": {
+              "yes": 0.55,
+              "no": 0.45
+            },
+            "confidence": 0.09
+          },
+          {
+            "eip": 7251,
+            "question_id": "cross_eip_7251",
+            "referenced_via": [
+              "body",
+              "requires"
+            ],
+            "requires_coordinated_tests": true,
+            "choice": "yes",
+            "probabilities": {
+              "yes": 0.66,
+              "no": 0.34
+            },
+            "confidence": 0.33
+          },
+          {
+            "eip": 7688,
+            "question_id": "cross_eip_7688",
+            "referenced_via": [
+              "body",
+              "requires"
+            ],
+            "requires_coordinated_tests": true,
+            "choice": "yes",
+            "probabilities": {
+              "yes": 0.62,
+              "no": 0.38
+            },
+            "confidence": 0.25
+          },
+          {
+            "eip": 7732,
+            "question_id": "cross_eip_7732",
+            "referenced_via": [
+              "body",
+              "requires"
+            ],
+            "requires_coordinated_tests": true,
+            "choice": "yes",
+            "probabilities": {
+              "yes": 0.78,
+              "no": 0.22
+            },
+            "confidence": 0.55
+          },
+          {
+            "eip": 7928,
+            "question_id": "cross_eip_7928",
+            "referenced_via": [
+              "body",
+              "requires"
+            ],
+            "requires_coordinated_tests": true,
+            "choice": "yes",
+            "probabilities": {
+              "yes": 0.62,
+              "no": 0.38
+            },
+            "confidence": 0.24
+          },
+          {
+            "eip": 8282,
+            "question_id": "cross_eip_8282",
+            "referenced_via": [
+              "body",
+              "requires"
+            ],
+            "requires_coordinated_tests": true,
+            "choice": "yes",
+            "probabilities": {
+              "yes": 0.7,
+              "no": 0.3
+            },
+            "confidence": 0.4
+          }
+        ],
+        "qualifying_interactions": 8,
+        "base_score": 3,
+        "bonus": 1,
+        "final_score": 4
+      },
+      "total_score": 18,
+      "tier": {
+        "name": "Medium Complexity",
+        "emoji": "🟡",
+        "min_inclusive": 12,
+        "max_exclusive": 23,
+        "range": ">=12<23"
+      }
+    },
+    "rationale": null,
+    "special_considerations": null,
+    "notes": null,
+    "evaluated_at": "2026-09-23T01:57:04+00:00"
+  }
+}
