@@ -1,0 +1,225 @@
+# Hegotá (EIP-8081) EIPs Scheduled (SFI), Considered (CFI) and Proposed (PFI) for Inclusion.
+#
+# Source: EIPS/eip-8081.md at ethereum/EIPs commit 24c0edb17b82cb65f26d29f03e084637ec2ae2d4
+# ("Update EIP-8081: Decisions from ACDC187", 2026-09-21). `stage` is display-only metadata;
+# it is never sent to Jev.
+#
+# `layer` follows the project-owner-approved layer dispositions of the retrospective-complexity-eval
+# repository (Task 08 cohort review, snapshot hegota-pfi-2026-08-26-ac450a4, plus its SFI/CFI
+# extension). EIPs with layer "consensus" or "informational" are recorded as not applicable to
+# this execution-layer checklist and are not scored. EIPs that entered PFI after that snapshot
+# (8142, 8198, 8355, 8365, 8369, 8371, 8379) have no disposition yet and carry no `layer`, so
+# they are scored; classify them to change that.
+#
+# Paths are relative to the directory the command is run from (normally the repository root):
+#
+#     TYPESAFE_API_KEY=... uv run eip-complexity run configs/hegota.toml
+
+fork = "Hegota"
+meta_eip = 8081  # display-only: links the EIP count on the page to EIP-8081 at the assessed commit
+
+eips_repo = "../EIPs"
+eips_ref = "24c0edb17b82cb65f26d29f03e084637ec2ae2d4"  # empty or omitted: current remote default branch
+
+complexity_template = "templates/EIP-Complexity-Assessment.md"
+
+jev_model = "jev-1.13.0"  # what "jev-latest" resolved to on 2026-09-23; pinned so reruns are served from cache
+
+output_dir = "docs/hegota"                # committed; served by GitHub Pages from /docs
+cache_dir = ".cache/eip-complexity"      # gitignored; keeps reruns free of Jev calls
+
+render_html = true
+force = false
+
+# Display-only pointer to the human checklists for the same EIPs (linked from the page).
+[human_assessments]
+repo = "ethspecs/pm"
+path = "complexity_assessments/EIPs"
+branch = "main"
+pr_query = "is:pr complexity"
+
+# Scheduled for Inclusion
+[[eips]]
+number = 7805
+stage = "SFI"
+layer = "cross-layer"
+
+[[eips]]
+number = 8141
+stage = "SFI"
+layer = "execution"
+
+# Considered for Inclusion
+[[eips]]
+number = 8015
+stage = "CFI"
+layer = "consensus"
+
+# Proposed for Inclusion
+[[eips]]
+number = 3298
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 4758
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 5920
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7666
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7668
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7709
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7716
+stage = "PFI"
+layer = "consensus"
+
+[[eips]]
+number = 7906
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 7979
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8025
+stage = "PFI"
+layer = "cross-layer"
+
+[[eips]]
+number = 8077
+stage = "PFI"
+layer = "networking"
+
+[[eips]]
+number = 8116
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8131
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8142
+stage = "PFI"
+
+[[eips]]
+number = 8148
+stage = "PFI"
+layer = "cross-layer"
+
+[[eips]]
+number = 8151
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8163
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8173
+stage = "PFI"
+layer = "informational"
+
+[[eips]]
+number = 8198
+stage = "PFI"
+
+[[eips]]
+number = 8205
+stage = "PFI"
+layer = "cross-layer"
+
+[[eips]]
+number = 8250
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8253
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8272
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8279
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8298
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8304
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8365
+stage = "PFI"
+
+[[eips]]
+number = 8368
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8369
+stage = "PFI"
+
+[[eips]]
+number = 8333
+stage = "PFI"
+layer = "consensus"
+
+[[eips]]
+number = 8355
+stage = "PFI"
+
+[[eips]]
+number = 8363
+stage = "PFI"
+layer = "consensus"
+
+[[eips]]
+number = 8371
+stage = "PFI"
+
+[[eips]]
+number = 8372
+stage = "PFI"
+layer = "execution"
+
+[[eips]]
+number = 8379
+stage = "PFI"

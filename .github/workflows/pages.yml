@@ -1,0 +1,55 @@
+# Test, render every run's HTML from its canonical JSON, and deploy docs/ to GitHub Pages.
+#
+# Rendering needs neither Jev nor an ethereum/EIPs clone, so this workflow has no secrets.
+# The generated docs/*/index.html files are gitignored; the JSON in git is the record.
+# Repository settings -> Pages -> Source must be set to "GitHub Actions".
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install
+        run: uv sync --locked
+      - name: Test (Jev is mocked; no API key needed)
+        run: uv run pytest
+      - name: Render every run from its canonical JSON
+        run: |
+          set -euo pipefail
+          for run in docs/*/run.json; do
+            uv run eip-complexity render "$run"
+          done
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

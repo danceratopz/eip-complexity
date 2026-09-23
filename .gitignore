@@ -1,0 +1,15 @@
+# Python / uv
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Local Jev evaluation cache (results under docs/ are the committed record)
+.cache/
+
+# Run pages are rendered from JSON by the Pages workflow (and locally for preview)
+docs/*/index.html
+
+# Scratch
+tmp/

@@ -1,0 +1,26 @@
+[project]
+name = "eip-complexity"
+version = "0.1.0"
+description = "Reproducible EIP testing-complexity assessments with Jev (TypeSafe System One) against the EIP Complexity Assessment checklist."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+dependencies = [
+    "typesafe-sdk>=0.7.1,<0.8",
+]
+
+[project.scripts]
+eip-complexity = "eip_complexity.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+]
+
+[build-system]
+requires = ["uv_build>=0.10,<0.11"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
