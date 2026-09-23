@@ -43,6 +43,8 @@ pr_query = "is:pr complexity"
 page = "comparison.html"
 source_url = "https://danceratopz.github.io/retrospective-eip-complexity/prospective/hegota/?evaluator=llm"
 source_label = "retrospective EIP complexity study"
+rerun_page = "../hegota-2026-08-26/"
+rerun_label = "a Jev rerun on the EIP versions that study used"
 
 # Scheduled for Inclusion
 [[eips]]

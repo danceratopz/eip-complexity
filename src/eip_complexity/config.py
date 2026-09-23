@@ -27,9 +27,11 @@ _ALLOWED_TOP_LEVEL = {
     "eips",
     "human_assessments",
     "comparison",
+    "notice",
 }
+_ALLOWED_NOTICE_KEYS = {"text", "link", "link_label"}
 _ALLOWED_HUMAN_KEYS = {"repo", "path", "branch", "pr_query"}
-_ALLOWED_COMPARISON_KEYS = {"page", "source_url", "source_label"}
+_ALLOWED_COMPARISON_KEYS = {"page", "source_url", "source_label", "rerun_page", "rerun_label"}
 _ALLOWED_EIP_KEYS = {"number", "stage", "layer"}
 
 #: Values accepted for the per-EIP ``layer`` field.
@@ -70,9 +72,24 @@ class Comparison:
     page: str  # file name relative to output_dir, e.g. "comparison.html"
     source_url: str | None
     source_label: str
+    rerun_page: str | None  # relative link to a run on the external study's EIP versions, e.g. "../hegota-2026-08-26/"
+    rerun_label: str
 
     def to_dict(self) -> dict:
-        return {"page": self.page, "source_url": self.source_url, "source_label": self.source_label}
+        return {"page": self.page, "source_url": self.source_url, "source_label": self.source_label,
+                "rerun_page": self.rerun_page, "rerun_label": self.rerun_label}
+
+
+@dataclass(frozen=True)
+class Notice:
+    """Display-only callout shown under the page heading, e.g. to mark a run as secondary."""
+
+    text: str
+    link: str | None
+    link_label: str
+
+    def to_dict(self) -> dict:
+        return {"text": self.text, "link": self.link, "link_label": self.link_label}
 
 
 @dataclass(frozen=True)
@@ -83,6 +100,7 @@ class RunConfig:
     meta_eip: int | None  # display-only: the hardfork meta EIP the list was taken from
     human_assessments: HumanAssessments | None
     comparison: Comparison | None
+    notice: Notice | None
     eips_repo: Path
     eips_ref: str | None
     complexity_template: Path
@@ -165,6 +183,24 @@ def load_config(path: Path) -> RunConfig:
             page=page,
             source_url=_expect(comparison_raw, "source_url", str, default="", where=comparison_where).strip() or None,
             source_label=_expect(comparison_raw, "source_label", str, default="an external study", where=comparison_where).strip(),
+            rerun_page=_expect(comparison_raw, "rerun_page", str, default="", where=comparison_where).strip() or None,
+            rerun_label=_expect(comparison_raw, "rerun_label", str, default="a rerun on that study's EIP versions", where=comparison_where).strip(),
+        )
+
+    notice = None
+    notice_raw = _expect(data, "notice", dict, default=None, where=where)
+    if notice_raw is not None:
+        notice_where = f"{where}: [notice]"
+        unknown = set(notice_raw) - _ALLOWED_NOTICE_KEYS
+        if unknown:
+            raise ComplexityError(f"{notice_where}: unknown keys {sorted(unknown)}")
+        text = _expect(notice_raw, "text", str, default="", where=notice_where).strip()
+        if not text:
+            raise ComplexityError(f"{notice_where}: 'text' is required")
+        notice = Notice(
+            text=text,
+            link=_expect(notice_raw, "link", str, default="", where=notice_where).strip() or None,
+            link_label=_expect(notice_raw, "link_label", str, default="", where=notice_where).strip(),
         )
 
     eips_ref = _expect(data, "eips_ref", str, default="", where=where).strip() or None
@@ -209,6 +245,7 @@ def load_config(path: Path) -> RunConfig:
         meta_eip=meta_eip,
         human_assessments=human_assessments,
         comparison=comparison,
+        notice=notice,
         eips_repo=Path(_expect(data, "eips_repo", str, default=DEFAULT_EIPS_REPO, where=where)),
         eips_ref=eips_ref,
         complexity_template=Path(_expect(data, "complexity_template", str, default=DEFAULT_TEMPLATE, where=where)),

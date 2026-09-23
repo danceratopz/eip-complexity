@@ -1,0 +1,8 @@
+{
+  "title": "EIP Complexity",
+  "repository": "https://github.com/danceratopz/eip-complexity",
+  "nav": [
+    {"label": "Home", "href": "index.html"},
+    {"label": "Hegotá", "href": "hegota/"}
+  ]
+}

@@ -255,6 +255,7 @@ def run(config_path: Path, *, client_factory: Callable[[], JevClient] = TypeSafe
         "meta_eip": config.meta_eip,
         "human_assessments": config.human_assessments.to_dict() if config.human_assessments else None,
         "comparison": config.comparison.to_dict() if config.comparison else None,
+        "notice": config.notice.to_dict() if config.notice else None,
         "config": {
             "path": str(config.path),
             "sha256": config.sha256,

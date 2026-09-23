@@ -1,0 +1,325 @@
+{
+  "kind": "eip-complexity-comparison-data",
+  "schema_version": 1,
+  "extracted_at": "2026-09-23T09:46:05+00:00",
+  "source": {
+    "repository": "https://github.com/danceratopz/retrospective-eip-complexity",
+    "commit": "4987a4539eb5fce21e63074b94ae60903b6b07b6",
+    "files": {
+      "research/tasks/08-hegota-prospective-complexity-assessment/outputs/summary.yaml": "e604abb081fa3ef515b9413f218a0e72dc906400204413dc3af7865db1968b70",
+      "research/tasks/08-hegota-prospective-complexity-assessment/extensions/sfi-cfi-2026-08-26/outputs/summary.yaml": "3fe3a53726d7c1cec087eb8a3852eb6e659562791b71563a9f9a357847f0a866",
+      "research/tasks/08-hegota-prospective-complexity-assessment/config.yaml": "b2a18d6d6d0f8afa185c9d1622dd44fe49fd83a65e7d0b86e7121a116ec68b28",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/snapshot.yaml": "3b250f26fce8c65c54b6bd9e9d12df7330915ae7f8e3700f61263866a7c737ae",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-2488.yaml": "5e1af322ebac1ceeacceeabd4b48fd52eacb755fa44404b3cfd02d050381fec8",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-3298.yaml": "122ee8c3158024c26590bd7a78f561fc1d085baf869f6b37e9a739f7efb085e3",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-4758.yaml": "b4717dd137d0ef500dac1f05b7ed94d12cfab466c5b229fe7556c802f7e37b11",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-5920.yaml": "133e9319f25bd9097c37495e8398243fc37a847d7a18de9014a1afe81a267ed3",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-7645.yaml": "ae8feeb96072a833ab223bf238b67f2d35110a8eb13799d9c4803718188d0ce2",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-7666.yaml": "dd0394a463f7869f2840bdd2161bf8defa5b7e8f0273c3e200996517b7c43ca9",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-7668.yaml": "cba2a0be698b97ef6b0a708fcc55076a1040825265933209d83a6274e9033497",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-7709.yaml": "3feafcaf1e70499aa50e2a309c32f34b86eaac6e2eea818e8956588cba8d6520",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-7805.yaml": "0a29be7f88aefa8b7e3d69e0080f4c2eb15cabdcb48796837eeecfc4082859dc",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-7819.yaml": "46b88a993f3e2da5fe41394340f9ed434292539bf2963322ebd98cd4d2b73f49",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-7862.yaml": "293e1d8032a660cfffcfe5623c08614fd9877c79b64e2b9df6040b9c01e45fec",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-7906.yaml": "f363d8a27dc31b9e263b9c2788a48f09e1a7acc05cc0a8cfc94bd39ba25aa071",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-7923.yaml": "f1e40df995212b2604cb66cd1857ad67daa5deb30a4d2f2f0bb27a1a4f0e7003",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-8115.yaml": "e43f51eb531399304b2431b797f92f1c7aaa29c6524f2a39e534467c9c54b3a8",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-8141.yaml": "a7d7b4d1325cd9b34d879667fb5e8c05741f4130045be69ce90a65989d000fb6",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-8146.yaml": "019e2ddf991cde7c14fb39bc5116e6c34d5cf8c611a002244547b5c9d1c2838b",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-8188.yaml": "441883ccea629c9e77400f71f3e17b148e9ab3e8023e2523d5c5f46fc4053979",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-8200.yaml": "e90d9cac6551202a496874592f4acac48e8bcfe59b803e2742fa3337e8de1ac6",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-8205.yaml": "5c71d016532338a998a2f35257a99922dced8415897f4858ba214631c0a6a270",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-8250.yaml": "bbe6ad03936bd4c737cfaf7bd342bbee44eed18a62257d3081f86ddc2208b45f",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-8272.yaml": "ae44c7312e99739bcd16493d118b892732d0073551c36bde688cbd3058415e43",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-8279.yaml": "ecdc047d8ba44b726ff1b462b75ed1685e2ad6073e3ba71f876e9c1d3192c0c0",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-8304.yaml": "6d8524db8af64855b1b0bf48b9bd1ce5fd4844761ea8ee4163fbb067e934dd4e",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-8368.yaml": "b1cc9217440acbd925af502216700423efbdf8761977feff55692ad2b29dec40",
+      "research/tasks/09-hegota-human-assessment-snapshot/outputs/assessments/eip-8372.yaml": "ac8d9777bb094fd93bd3b24a00bc0968c9783233f29e8527e355055de8104332"
+    }
+  },
+  "checklist": {
+    "revision_1": {
+      "repo": "ethspecs/pm",
+      "commit": "51a8e5c15144a96f088e1e1c2261e9cc87c80ac2",
+      "path": "Templates/EIP-Complexity-Assessment.md",
+      "anchors": 24,
+      "scale": "0-72",
+      "tiers": "10/20"
+    },
+    "revision_2": {
+      "repo": "ethspecs/pm",
+      "commit": "3d8c0128c5543dd3146341ef395aa344e4abea30",
+      "path": "Templates/EIP-Complexity-Assessment.md",
+      "anchors": 28,
+      "scale": "0-84 nominal",
+      "tiers": "12/23"
+    }
+  },
+  "llm": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "xhigh",
+    "checklist_revision": 2,
+    "eips_commit": "ac450a4ab2f37387385ee9c54b62f518d97e6cc9",
+    "snapshot_id": "hegota-pfi-2026-08-26-ac450a4",
+    "information_cutoff_at": "2026-08-25T11:56:58Z",
+    "site": "https://danceratopz.github.io/retrospective-eip-complexity/prospective/hegota/?evaluator=llm",
+    "scores": {
+      "2488": 10,
+      "3298": 12,
+      "4758": 14,
+      "5920": 16,
+      "7645": 11,
+      "7666": 15,
+      "7668": 10,
+      "7709": 20,
+      "7807": 34,
+      "7819": 21,
+      "7851": 23,
+      "7862": 14,
+      "7906": 28,
+      "7923": 23,
+      "7979": 16,
+      "8025": 21,
+      "8077": 15,
+      "8094": 20,
+      "8115": 16,
+      "8116": 10,
+      "8131": 18,
+      "8146": 20,
+      "8148": 27,
+      "8151": 22,
+      "8182": 20,
+      "8188": 26,
+      "8200": 28,
+      "8205": 24,
+      "8237": 29,
+      "8250": 42,
+      "8253": 20,
+      "8272": 39,
+      "8279": 29,
+      "8298": 22,
+      "8304": 30,
+      "8368": 12,
+      "8372": 19,
+      "7805": 20,
+      "8141": 60
+    },
+    "not_applicable": {
+      "7716": "Changes Beacon State attestation-penalty accounting only and defines no execution-layer behavior.",
+      "8015": "Removes deposit and eth1data fields from consensus BeaconBlockBody and BeaconState containers only.",
+      "8163": "Reserves an EVM opcode value but requires no current L1 execution-client behavior change; the project owner explicitly excluded it from evaluation.",
+      "8173": "Defines an informational execution-layer control-flow model but no protocol or client behavior change; the project owner explicitly excluded it from evaluation.",
+      "8243": "Changes consensus attestation containers, production, validation, aggregation, and gossip only.",
+      "8333": "Explicitly makes no execution-layer change and modifies consensus checkpoint selection and fork choice.",
+      "8363": "Changes consensus validator issuance, reward, and burn accounting and explicitly requires no execution-layer changes."
+    }
+  },
+  "human": {
+    "snapshot_id": "hegota-human-2026-09-13-3d8c012",
+    "captured_at": "2026-09-13T16:58:26Z",
+    "upstream": "ethspecs/pm",
+    "site": "https://danceratopz.github.io/retrospective-eip-complexity/prospective/hegota/?evaluator=human",
+    "entries": {
+      "2488": {
+        "total": 13,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/114",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/db669a2c21a168ced78bd4de56db3870f1ac0c58/complexity_assessments/EIPs/EIP-2488.md"
+      },
+      "3298": {
+        "total": 6,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/115",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/6672c60213099cd1726af93a556963767229ff5a/complexity_assessments/EIPs/EIP-3298.md"
+      },
+      "4758": {
+        "total": 8,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/105",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/87fbde51cd4dbe50f3f594e55217384549fce93e/complexity_assessments/EIPs/EIP-4758.md"
+      },
+      "5920": {
+        "total": 14,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/116",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/c2b40ca1b8b4529ecee5bc90581e7e76a4b47a68/complexity_assessments/EIPs/EIP-5920.md"
+      },
+      "7645": {
+        "total": 8,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/113",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/2f541d3e66f737d089c3a3e89707988637af2948/complexity_assessments/EIPs/EIP-7645.md"
+      },
+      "7666": {
+        "total": 12,
+        "checklist_revision": 2,
+        "status": "in_progress",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/112",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/4a25f38a8f36442fdb10dcae447a51a85f82c7e8/complexity_assessments/EIPs/EIP-7666.md"
+      },
+      "7668": {
+        "total": 7,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/118",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/0125045895b5e3dab780afbf490a8d68c06abd1b/complexity_assessments/EIPs/EIP-7668.md"
+      },
+      "7709": {
+        "total": 17,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/120",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/e75fc8b75e247b545d095a86de2ab939270c20e4/complexity_assessments/EIPs/EIP-7709.md"
+      },
+      "7805": {
+        "total": 15,
+        "checklist_revision": 1,
+        "status": "complete",
+        "kind": "default_branch",
+        "url": "https://github.com/ethspecs/pm/blob/3d8c0128c5543dd3146341ef395aa344e4abea30/complexity_assessments/EIPs/EIP-7805.md",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/3d8c0128c5543dd3146341ef395aa344e4abea30/complexity_assessments/EIPs/EIP-7805.md"
+      },
+      "7819": {
+        "total": 22,
+        "checklist_revision": 2,
+        "status": "in_progress",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/128",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/664f62e0e0ac2db5426796bd76ffca420e491bf0/complexity_assessments/EIPs/EIP-7819.md"
+      },
+      "7862": {
+        "total": 26,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/124",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/1dc6a162915c5d1dba92ba64efa8d8bef9981bcb/complexity_assessments/EIPs/EIP-7862.md"
+      },
+      "7906": {
+        "total": 23,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/132",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/18cfcab5e295ad9e544c8bf8b57f998defaa7b31/complexity_assessments/EIPs/EIP-7906.md"
+      },
+      "7923": {
+        "total": 15,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/134",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/5f85492e085509e32602538d721e23fc11be6323/complexity_assessments/EIPs/EIP-7923.md"
+      },
+      "8115": {
+        "total": 10,
+        "checklist_revision": 2,
+        "status": "in_progress",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/126",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/39f6dc729d089e0c81279774cbf8f3e0c6731a4a/complexity_assessments/EIPs/EIP-8115.md"
+      },
+      "8141": {
+        "total": 38,
+        "checklist_revision": 1,
+        "status": "complete",
+        "kind": "default_branch",
+        "url": "https://github.com/ethspecs/pm/blob/3d8c0128c5543dd3146341ef395aa344e4abea30/complexity_assessments/EIPs/EIP-8141.md",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/3d8c0128c5543dd3146341ef395aa344e4abea30/complexity_assessments/EIPs/EIP-8141.md"
+      },
+      "8146": {
+        "total": 19,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/106",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/5963e7a7e1eb846a5dbce552d233255ca0583cba/complexity_assessments/EIPs/EIP-8146.md"
+      },
+      "8188": {
+        "total": 18,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/125",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/042096dd3debf88e51204bbf341c35c8527f6228/complexity_assessments/EIPs/EIP-8188.md"
+      },
+      "8200": {
+        "total": 22,
+        "checklist_revision": 2,
+        "status": "in_progress",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/109",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/6a3be712b937ad5d7ecfa7bf4f0afaf0ee25e922/complexity_assessments/EIPs/EIP-8200.md"
+      },
+      "8205": {
+        "total": 5,
+        "checklist_revision": 1,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/73",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/7bdc9e9829d47ac2f7520f23e0692e099a51e95f/complexity_assessments/EIPs/EIP-8205.md"
+      },
+      "8250": {
+        "total": 20,
+        "checklist_revision": 2,
+        "status": "in_progress",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/111",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/b0886dc0692db6e860765458d757d36ca5156a8e/complexity_assessments/EIPs/EIP-8250.md"
+      },
+      "8272": {
+        "total": 14,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/133",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/d54b36561f34f0f870426e6fd826a510035014c8/complexity_assessments/EIPs/EIP-8272.md"
+      },
+      "8279": {
+        "total": 22,
+        "checklist_revision": 2,
+        "status": "in_progress",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/108",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/9674b1fd589add3ab86713f95c4967de244c94e5/complexity_assessments/EIPs/EIP-8279.md"
+      },
+      "8304": {
+        "total": 26,
+        "checklist_revision": 2,
+        "status": "available_in_open_pr",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/127",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/ec861017c0006c353bdab4a9f3e910e40609495c/complexity_assessments/EIPs/EIP-8304.md"
+      },
+      "8368": {
+        "total": 16,
+        "checklist_revision": 2,
+        "status": "in_progress",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/129",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/e47b8d0d35ef9a949f193f202564e32e128460cc/complexity_assessments/EIPs/EIP-8368.md"
+      },
+      "8372": {
+        "total": 20,
+        "checklist_revision": 2,
+        "status": "in_progress",
+        "kind": "open_pull_request",
+        "url": "https://github.com/ethspecs/pm/pull/110",
+        "immutable_url": "https://github.com/ethspecs/pm/blob/bcbc0c2a77e6866575f99aeb59889f52ae83361b/complexity_assessments/EIPs/EIP-8372.md"
+      }
+    }
+  }
+}

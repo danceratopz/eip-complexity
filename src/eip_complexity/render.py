@@ -483,14 +483,14 @@ _CSS = """
   color-scheme: light dark;
   --surface: #f6f6f4; --card: #ffffff; --card-2: #f3f2ef; --ink: #14140f; --ink-2: #55544f; --ink-3: #8a8a86;
   --line: #e4e3df; --line-2: #d3d2cd; --accent: #2a78d6; --track: #ebeae6; --hover: #f7f7f4; --open: #f1f0ec;
-  --focus: #2a78d6; --dist: #cfd8e6; --dist-chosen: #2a78d6;
+  --focus: #2a78d6; --dist: #cfd8e6; --dist-chosen: #2a78d6; --notice-bg: #fff6df; --notice-line: #d9a224;
   --tier-high-bg: #fbe3e3; --tier-high-ink: #8c1f1f; --tier-medium-bg: #fff1cc; --tier-medium-ink: #7a5300; --tier-low-bg: #dff4e6; --tier-low-ink: #12603a;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --surface: #161614; --card: #1e1e1b; --card-2: #262622; --ink: #f2f2ee; --ink-2: #bdbcb4; --ink-3: #8a8a86;
     --line: #30302c; --line-2: #3d3d38; --accent: #6ea8f0; --track: #2b2b27; --hover: #232320; --open: #292926;
-    --dist: #3a4352; --dist-chosen: #6ea8f0;
+    --dist: #3a4352; --dist-chosen: #6ea8f0; --notice-bg: #3a3116; --notice-line: #c99a2e;
     --tier-high-bg: #4a1d1d; --tier-high-ink: #ffb3b3; --tier-medium-bg: #4a3a0e; --tier-medium-ink: #ffd97a; --tier-low-bg: #17402a; --tier-low-ink: #9fe3bb;
   }
 }
@@ -556,7 +556,9 @@ dl.prov { display: grid; grid-template-columns: 200px 1fr; gap: 6px 14px; margin
 dl.prov dt { color: var(--ink-2); } dl.prov dd { margin: 0; overflow-wrap: anywhere; }
 ul.limits { padding-left: 20px; margin: 10px 0 4px; } ul.limits li { margin: 6px 0; }
 .intro { margin: 0 0 8px; max-width: 900px; color: var(--ink-2); } .intro + .intro { margin-bottom: 14px; }
-.repo-line { margin: 0 0 14px; color: var(--ink-3); font-size: 13px; } .repo-line a { font-weight: 600; }
+.notice { display: flex; gap: 12px; align-items: flex-start; margin: 8px 0 16px; padding: 10px 14px; max-width: 900px; background: var(--notice-bg); border: 1px solid var(--notice-line); border-left: 4px solid var(--notice-line); border-radius: 8px; color: var(--ink); }
+.notice-mark { flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--notice-line); color: #fff; font-weight: 700; font-size: 12px; text-align: center; line-height: 20px; margin-top: 1px; }
+.notice a { font-weight: 600; }
 .toolbar { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; flex-wrap: wrap; }
 .toolbar input[type="search"] { flex: 0 1 320px; min-width: 200px; padding: 7px 10px; font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line-2); border-radius: 7px; }
 .toolbar input[type="search"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
@@ -749,6 +751,56 @@ def largest_state(evaluations: list[dict]) -> dict | None:
     return best
 
 
+SITE_FILE = "site.json"
+GITHUB_MARK = (
+    '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 '
+    "5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 "
+    "1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 "
+    "0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 "
+    '3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>'
+)
+
+NAV_CSS = """
+.site-nav { display: flex; align-items: center; gap: 4px 18px; flex-wrap: wrap; margin: 0 0 22px; padding: 0 0 12px; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+.site-nav .brand { font-weight: 700; color: var(--ink); text-decoration: none; margin-right: 6px; }
+.site-nav a.nav-link { color: var(--ink-2); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
+.site-nav a.nav-link:hover { color: var(--ink); } .site-nav a.nav-link.active { color: var(--ink); border-bottom-color: var(--accent); }
+.site-nav .spacer { flex: 1; }
+.site-nav a.github { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); text-decoration: none; }
+.site-nav a.github:hover { color: var(--ink); } .site-nav a.github svg { display: block; }
+"""
+
+
+def load_site(docs_dir: Path) -> dict | None:
+    """The optional site description (title, repository, nav) kept at the docs root, shared by every page."""
+    path = Path(docs_dir) / SITE_FILE
+    if not path.exists():
+        return None
+    site = read_json(path, where="site description")
+    if not isinstance(site.get("nav"), list):
+        raise ComplexityError(f"{path}: 'nav' must be a list of {{label, href}} entries")
+    return site
+
+
+def render_nav(site: dict | None, prefix: str, active_href: str | None) -> str:
+    """The shared navigation bar. ``prefix`` is the relative path from the current page to the docs root."""
+    if not site:
+        return ""
+    links = "".join(
+        f'<a class="nav-link{" active" if item.get("href") == active_href else ""}" href="{_esc(prefix + item["href"])}">{_esc(item["label"])}</a>'
+        for item in site["nav"]
+    )
+    github = (
+        f'<a class="github" href="{_esc(site["repository"])}" title="Source code, configuration and canonical JSON results on GitHub">'
+        f"{GITHUB_MARK}<span>GitHub</span></a>"
+        if site.get("repository") else ""
+    )
+    return (
+        f'<nav class="site-nav" aria-label="Site"><a class="brand" href="{_esc(prefix + "index.html")}">{_esc(site.get("title", "EIP complexity"))}</a>'
+        f'{links}<span class="spacer"></span>{github}</nav>'
+    )
+
+
 def _question_for(evaluation: dict, anchor_id: str) -> dict | None:
     return (evaluation.get("request", {}).get("payload", {}).get("questions", {}) or {}).get(anchor_id)
 
@@ -926,6 +978,17 @@ def _render_definitions(example: dict, anchors: list[dict], styles: dict[str, di
     return f'<div class="defs">{"".join(blocks)}</div>'
 
 
+def _render_notice(notice: dict | None) -> str:
+    """An admonition under the heading, from the run's ``[notice]`` config (e.g. marking a run as secondary)."""
+    if not notice or not notice.get("text"):
+        return ""
+    link = ""
+    if notice.get("link"):
+        label = notice.get("link_label") or notice["link"]
+        link = f' <a href="{_esc(notice["link"])}">{_esc(label)}</a>'
+    return f'<div class="notice" role="note"><span class="notice-mark" aria-hidden="true">!</span><div>{_esc(notice["text"])}{link}</div></div>'
+
+
 def _sort_header(label: str, key: str, *, cls: str = "", title: str | None = None) -> str:
     tooltip = _esc(title) if title else f"Sort by {_esc(label.lower())}"
     return (
@@ -934,7 +997,7 @@ def _sort_header(label: str, key: str, *, cls: str = "", title: str | None = Non
     )
 
 
-def render_html(manifest: dict, items: list[dict]) -> str:
+def render_html(manifest: dict, items: list[dict], *, site: dict | None = None, nav_prefix: str = "../", nav_active: str | None = None) -> str:
     anchors = _anchor_order(items)
     styles = anchor_styles([a["id"] for a in anchors])
     evaluations = [i for i in items if is_evaluated(i)]
@@ -946,13 +1009,6 @@ def render_html(manifest: dict, items: list[dict]) -> str:
     commit = manifest["eips_repo"]["resolved_commit"]
     eips_base = _github_base(manifest["eips_repo"]["origin_url"])
     eips_label = _esc(f"ethereum/EIPs @ {commit[:10]}" if eips_base and eips_base.endswith("/ethereum/EIPs") else f"EIPs @ {commit[:10]}")
-    repo_remote = (manifest.get("evaluator", {}).get("git") or {}).get("remote_url")
-    repo_base = _github_base(repo_remote) if repo_remote else None
-    repo_line = (
-        f'<p class="repo-line"><a href="{_esc(repo_base)}">{_esc(repo_base.removeprefix("https://"))}</a>'
-        " · source code, configuration and canonical JSON results</p>"
-        if repo_base else ""
-    )
     chips = [
         f'<a href="{_esc(template_url(manifest))}">checklist revision {revision} ({manifest["template"]["anchor_count"]} criteria)</a>',
         f'<a href="{JEV_DOCS_URL}">Jev {_esc(manifest["jev"]["resolved_model"])}</a>',
@@ -960,11 +1016,6 @@ def render_html(manifest: dict, items: list[dict]) -> str:
         _eip_count_chip(manifest, items, eips_base, commit),
         f"generated {_esc(manifest['created_at'])}",
     ]
-    if repo_base:
-        chips.append(
-            f'<a href="{_esc(repo_base)}" title="Source code, configuration and canonical JSON results">'
-            f'source &amp; data: {_esc(repo_base.removeprefix("https://github.com/"))}</a>'
-        )
     fork = manifest["fork"]
     largest = largest_state(evaluations)
     title = f"An Automated \u201cSystem One\u201d Evaluation of {fork} EIP Testing Complexity"
@@ -986,9 +1037,13 @@ def render_html(manifest: dict, items: list[dict]) -> str:
             f'the <a href="{_esc(comparison["source_url"])}">{_esc(comparison["source_label"])}</a>'
             if comparison.get("source_url") else _esc(comparison["source_label"])
         )
+        rerun = (
+            f', together with <a href="{_esc(comparison["rerun_page"])}">{_esc(comparison["rerun_label"])}</a>'
+            if comparison.get("rerun_page") else ""
+        )
         sentence = (
             f' A <a href="{_esc(comparison["page"])}">comparison</a> of these scores with the human assessments '
-            f"and with the LLM evaluations of {source} is kept on a separate page."
+            f"and with the LLM evaluations of {source} is kept on a separate page{rerun}."
         )
         human_intro = (human_intro + sentence) if human_intro else f'<p class="intro">{sentence.strip()}'
     if human_intro:
@@ -1007,9 +1062,10 @@ def render_html(manifest: dict, items: list[dict]) -> str:
         "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
         f"<title>{_esc(title)}</title>"
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
-        f"<style>{_CSS}</style></head><body><main>"
+        f"<style>{_CSS}{NAV_CSS}</style></head><body><main>"
+        f"{render_nav(site, nav_prefix, nav_active)}"
         f"<h1>{_esc(title)}</h1>"
-        f"{repo_line}"
+        f"{_render_notice(manifest.get('notice'))}"
         f'<p class="intro"><b>This is an experimental study of {_esc(fork)} EIP testing complexity</b>, scored by '
         f'<a href="{JEV_DOCS_URL}">Jev</a> from each EIP\'s markdown and the '
         f'<a href="{_esc(template_url(manifest))}">ethspecs EIP complexity evaluation template</a>.</p>'
@@ -1048,6 +1104,11 @@ def render_html(manifest: dict, items: list[dict]) -> str:
 
 def render_run(run_path: Path) -> Path:
     run_path, manifest, evaluations = load_run(Path(run_path))
-    output = run_path.parent / "index.html"
-    output.write_text(render_html(manifest, evaluations), encoding="utf-8")
+    run_dir = run_path.parent
+    site = load_site(run_dir.parent)
+    output = run_dir / "index.html"
+    output.write_text(
+        render_html(manifest, evaluations, site=site, nav_prefix="../", nav_active=f"{run_dir.name}/"),
+        encoding="utf-8",
+    )
     return output

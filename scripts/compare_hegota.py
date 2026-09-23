@@ -20,6 +20,8 @@ import statistics
 import subprocess
 from pathlib import Path
 
+from eip_complexity.render import NAV_CSS, load_site, render_nav
+
 EIPS_GITHUB = "https://github.com/ethereum/EIPs"
 
 
@@ -164,7 +166,8 @@ def main() -> None:
     S = {
         "OLD_VS_LLM": stats([(old_scored[n]["total_score"], llm[n]) for n in old_scored if n in llm]),
         "NEW_VS_LLM": stats([(new_scored[n]["total_score"], llm[n]) for n in new_scored if n in llm]),
-        "DRIFT": stats([(new_scored[n]["total_score"], old_scored[n]["total_score"]) for n in new_scored if n in old_scored]),
+        # Only EIPs whose text changed: identical text hits the same cache entry, so comparing it with itself says nothing.
+        "DRIFT": stats([(new_scored[n]["total_score"], old_scored[n]["total_score"]) for n in new_scored if n in old_scored and n not in unchanged]),
         "OLD_VS_HUMAN": stats([(old_scored[n]["total_score"], h2[n]["total"]) for n in old_scored if n in h2]),
         "NEW_VS_HUMAN": stats([(new_scored[n]["total_score"], h2[n]["total"]) for n in new_scored if n in h2]),
         "LLM_VS_HUMAN": stats([(llm[n], h2[n]["total"]) for n in h2 if n in llm]),
@@ -180,11 +183,14 @@ def main() -> None:
     TWO_VS_TWO = f'<a href="{rev_link["revision_2"]}">2</a> vs <a href="{rev_link["revision_2"]}">2</a>'
     TEXT_SAME = f"identical, {OLD_L}"
     TEXT_DRIFT = f'<span title="Jev scored the text at {NEW_SHA[:7]}, the other side at {OLD_SHA[:7]}">{NEW_L} vs {OLD_L}</span>'
+    changed_n = len([n for n in new_scored if n in old_scored and n not in unchanged])
+    TEXT_CHANGED_ONLY = (f'<span title="Only the {changed_n} EIPs whose Markdown differs between the two commits; the other {len(unchanged)} '
+                         f'have identical text and therefore the identical cached evaluation">{NEW_L} vs {OLD_L}, changed text only</span>')
     HUMAN_TEXT = '<span title="Human checklists were written against whatever EIP text their pull request had">mixed PR heads</span>'
     LABELS = {
         "OLD_VS_LLM": (f"{H_JEV_OLD} vs {H_LLM_OLD}", TWO_VS_TWO, TEXT_SAME),
         "NEW_VS_LLM": (f"{H_JEV_NEW} vs {H_LLM_OLD}", TWO_VS_TWO, TEXT_DRIFT),
-        "DRIFT": (f"{H_JEV_NEW} vs {H_JEV_OLD}", TWO_VS_TWO, TEXT_DRIFT),
+        "DRIFT": (f"{H_JEV_NEW} vs {H_JEV_OLD}", TWO_VS_TWO, TEXT_CHANGED_ONLY),
         "OLD_VS_HUMAN": (f"{H_JEV_OLD} vs human", HUMAN_MIXED, f"{OLD_L} vs {HUMAN_TEXT}"),
         "NEW_VS_HUMAN": (f"{H_JEV_NEW} vs human", HUMAN_MIXED, f"{NEW_L} vs {HUMAN_TEXT}"),
         "LLM_VS_HUMAN": (f"{H_LLM_OLD} vs human", HUMAN_MIXED, f"{OLD_L} vs {HUMAN_TEXT}"),
@@ -264,10 +270,13 @@ def main() -> None:
 
     src = data["source"]
     llm_meta = data["llm"]
+    site = load_site(args.out.parent.parent)
+    nav = render_nav(site, "../", f"{args.out.parent.name}/{args.out.name}")
     page = (
         '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Hegota EIP testing complexity: Jev vs LLM vs human</title>'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
-        f"<style>{CSS}</style></head><body><main>"
+        f"<style>{CSS}{NAV_CSS}</style></head><body><main>"
+        f"{nav}"
         "<h1>Hegota EIP testing complexity: Jev vs reasoning LLM vs human</h1>"
         f'<p class="lead">This page compares the <a href="index.html">Jev scores</a> of the Hegota EIPs with the reasoning-LLM and human '
         f'assessments collected by the <a href="{esc(llm_meta["site"])}">retrospective EIP complexity study</a>. '
@@ -305,8 +314,9 @@ def main() -> None:
         f'<li>Under each EIP number: permalinks to its Markdown at the commit(s) it was scored at and, where the text changed between them, a GitHub compare '
         f"link anchored on that file{' plus the change size, which opens the unified diff embedded under the row' if clone else ''}. "
         f'{len(unchanged)} of the {len([n for n in new_scored if n in old_scored])} EIPs in both runs had identical text and were served from cache in the rerun.</li>'
-        "<li>\"drift\" is Jev at the newer commit minus Jev at the older one. It mixes real text edits with Jev\\'s own call-to-call variation: EIP-8141 changed by "
-        "three lines and still moved by four points, about one standard deviation of its expected total.</li>"
+        f"<li>\"drift\" is Jev at the newer commit minus Jev at the older one, and its agreement row uses only the {changed_n} EIPs whose text changed: "
+        f"the other {len(unchanged)} were not re-evaluated, since identical input maps to the same cached evaluation. Drift mixes real text edits with "
+        "Jev\\'s own call-to-call variation: EIP-8141 changed by three lines and still moved by four points, about one standard deviation of its expected total.</li>"
         f'<li>Tiers: Low &lt;12, Medium 12–22, High ≥23 (<a href="{rev_link["revision_2"]}">revision 2</a>).</li>'
         "</ul>"
         f"{SCRIPT}</main></body></html>\n"

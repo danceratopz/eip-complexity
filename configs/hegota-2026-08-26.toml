@@ -19,6 +19,12 @@ cache_dir = ".cache/eip-complexity"
 render_html = true
 force = false
 
+# Shown as a callout under the page heading: this run exists for the comparison, not as the assessment of record.
+[notice]
+text = "This is not the current Hegotá evaluation. It re-runs Jev on the EIP versions used by the retrospective EIP complexity study (ethereum/EIPs at ac450a4, 2026-08-26) so that the comparison with that study's LLM and human assessments uses identical text. Several of these EIPs have since been declined for Hegotá. For the current scores see"
+link = "../hegota/"
+link_label = "the Hegotá evaluation."
+
 [human_assessments]
 repo = "ethspecs/pm"
 path = "complexity_assessments/EIPs"

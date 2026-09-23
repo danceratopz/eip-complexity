@@ -32,7 +32,8 @@ def test_render_from_json_only(completed_run, monkeypatch):
     assert output == completed_run.parent / "index.html"
     html = output.read_text()
     assert "<title>An Automated \u201cSystem One\u201d Evaluation of Testfork EIP Testing Complexity</title>" in html
-    assert (('<p class="repo-line"><a href="https://github.com/' in html) == ('source &amp; data' in html)), "repo line and chip appear together, only with a GitHub remote"
+    assert '<nav class="site-nav"' not in html, "no site.json beside the run directory, so no navigation bar"
+    assert '<div class="notice" role="note"><span class="notice-mark" aria-hidden="true">!</span><div>Secondary run for comparison only. See <a href="../out/">the main run.</a></div></div>' in html
     assert "<b>This is an experimental study of Testfork EIP testing complexity</b>" in html
     assert '<p class="intro">If an EIP builds' not in html, "the caveat moved into the Limitations block"
     assert '<details class="how" id="limitations"><summary><b>Limitations</b>' in html
@@ -55,7 +56,8 @@ def test_render_from_json_only(completed_run, monkeypatch):
     assert '<a href="https://github.com/example/pm/pulls?q=is%3Apr+EIP-9001">pull requests mentioning EIP-9001</a>' in html
     assert '<a href="https://github.com/example/pm/blob/main/assessments/EIPs/EIP-9001.md">committed file, if merged</a>' in html
     assert "<dt>Human assessments</dt>" in html
-    assert 'for that EIP. A <a href="comparison.html">comparison</a> of these scores with the human assessments and with the LLM evaluations of the <a href="https://example.invalid/study">example study</a> is kept on a separate page.</p>' in html
+    assert ('for that EIP. A <a href="comparison.html">comparison</a> of these scores with the human assessments and with the LLM evaluations of the '
+            '<a href="https://example.invalid/study">example study</a> is kept on a separate page, together with <a href="../out-old/">a rerun on old text</a>.</p>') in html
     import re as _re
 
     assert (_re.search(r'<a href="https://github\.com/[^"]+" title="Source code, configuration and canonical JSON results">source &amp; data: [^<]+</a>', html)
@@ -125,6 +127,7 @@ def test_rows_sorted_by_total_descending():
     html = render_html(manifest, [evaluation(1, [1, 0]), evaluation(2, [1, 3]), evaluation(3, [0, 3])])
     assert html.index("EIP-2") < html.index("EIP-3") < html.index("EIP-1")
     assert "Human assessment" not in html, "no human-assessment links without the config table"
+    assert 'class="notice"' not in html, "no callout without a [notice] table"
     assert "CFI" in html and 'commit/abc123def456' in html
     assert '<a href="https://github.com/ethereum/EIPs/tree/abc123def456" title="ethereum/EIPs at the exact commit assessed">ethereum/EIPs @ abc123def4</a>' in html
     assert '<a class="src" href="https://github.com/ethereum/EIPs/blob/abc123def456/EIPS/eip-2.md" title="Markdown as assessed, at ethereum/EIPs commit abc123def4">src</a>' in html
@@ -159,6 +162,20 @@ def test_expected_column_is_rendered_and_sortable(completed_run):
     assert '<span class="sd"> ± ' in html
     assert "<th class=\"num\" title=\"Probability-weighted total" in html  # per-criterion column in the details table
     assert "The Expected column is derived on this page" in html
+
+
+def test_site_nav_is_rendered_from_site_json(completed_run):
+    import json as _json
+
+    docs_dir = completed_run.parent.parent
+    (docs_dir / "site.json").write_text(_json.dumps({
+        "title": "Test site", "repository": "https://github.com/example/site",
+        "nav": [{"label": "Home", "href": "index.html"}, {"label": "Out", "href": "out/"}, {"label": "Other", "href": "other/"}],
+    }))
+    html = render_run(completed_run).read_text()
+    assert '<nav class="site-nav" aria-label="Site"><a class="brand" href="../index.html">Test site</a>' in html
+    assert '<a class="nav-link active" href="../out/">Out</a>' in html and '<a class="nav-link" href="../other/">Other</a>' in html
+    assert '<a class="github" href="https://github.com/example/site"' in html and "<span>GitHub</span>" in html
 
 
 def test_anchor_styles_are_stable_and_labelled(template):
