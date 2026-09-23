@@ -177,6 +177,36 @@ _STAGE_RANK = {"SFI": 0, "CFI": 1, "PFI": 2, "DFI": 3}
 _TIER_CLASS = {"Low Complexity": "low", "Medium Complexity": "medium", "High Complexity": "high"}
 
 
+def expected_score(anchor: dict) -> float:
+    """Probability-weighted score of one criterion: sum of option value x probability (options are numeric strings)."""
+    return sum(int(option) * probability for option, probability in anchor["probabilities"].items())
+
+
+def score_variance(anchor: dict) -> float:
+    """Variance of one criterion's score under Jev's distribution."""
+    mean = expected_score(anchor)
+    return max(0.0, sum(int(o) ** 2 * p for o, p in anchor["probabilities"].items()) - mean ** 2)
+
+
+def expected_total(scores: dict) -> float:
+    """Sum of expected criterion scores plus the recorded Cross-EIP bonus, which is a deterministic template rule."""
+    total = sum(expected_score(anchor) for anchor in scores["anchors"])
+    cross = scores.get("cross_eip")
+    return total + (cross["bonus"] if cross else 0)
+
+
+def total_sd(scores: dict) -> float:
+    """Standard deviation of the total, treating the criteria as independent (square root of the summed variances)."""
+    return sum(score_variance(anchor) for anchor in scores["anchors"]) ** 0.5
+
+
+EXPECTED_TITLE = (
+    "Probability-weighted total ± standard deviation: for each criterion the option values weighted by Jev\'s "
+    "probabilities, summed over all criteria, plus the recorded Cross-EIP bonus; the ± is the square root of the summed "
+    "per-criterion variances, treating criteria as independent. Derived on this page from the stored probabilities; not a Jev output."
+)
+
+
 def _distribution_bar(probabilities: dict[str, float], choice: str) -> str:
     """A tiny stacked bar of the option probabilities; the chosen option is emphasised."""
     parts = []
@@ -227,6 +257,7 @@ def _render_row(item: dict, styles: dict[str, dict], max_total: int, manifest: d
             f'<td><span class="swatch" style="background:{style["color"]}"></span>{_esc(anchor["name"])}</td>'
             f'<td class="mono">{_esc(style["abbr"])}</td>'
             f'<td class="{score_cls}">{anchor["score"]}{extra}</td>'
+            f'<td class="num muted">{expected_score(anchor):.2f} <span class="small">± {score_variance(anchor) ** 0.5:.2f}</span></td>'
             f'<td class="num">{anchor["confidence"]:.2f}</td>'
             f'<td class="distcell">{_distribution_bar(anchor["probabilities"], anchor["choice"])}'
             f'<span class="mono small">{_probabilities_text(anchor["probabilities"], anchor["choice"])}</span></td>'
@@ -285,21 +316,25 @@ def _render_row(item: dict, styles: dict[str, dict], max_total: int, manifest: d
         if links else ""
     )
     source_path = (document.get("provenance", {}).get("eip_source") or {}).get("path")
+    expected = expected_total(scores)
+    sd = total_sd(scores)
     return (
         f'<details class="row" id="eip-{number}" data-number="{number}" data-title="{_esc(title.lower())}" '
-        f'data-stage-rank="{_STAGE_RANK.get((stage or "").upper(), 9)}" data-total="{total}">'
+        f'data-stage-rank="{_STAGE_RANK.get((stage or "").upper(), 9)}" data-total="{total}" data-expected="{expected:.3f}">'
         '<summary class="overview">'
         f"{_eip_cell(number, f'eip-{number}', manifest, source_path)}"
         f'<span class="title" title="{_esc(title)}">{_esc(title)}</span>'
         f'<span class="badges">{stage_html}</span>'
         f'<span class="barwrap"><span class="bar" style="width:{bar_width:.2f}%">{"".join(segments)}</span></span>'
         f'<span class="total"><span class="tier tier-{tier_class}" title="{_esc(tier["name"])}">{_esc(tier["emoji"])}</span>{total}</span>'
+        f'<span class="expected" title="{EXPECTED_TITLE}">{expected:.1f}<span class="sd"> ± {sd:.1f}</span></span>'
         "</summary>"
         '<div class="detail-body">'
         f'<p class="small muted">{meta}</p>'
         f"{sent_line}"
         f"{human_line}"
         '<table class="detail"><thead><tr><th>Criterion</th><th>Abbr</th><th class="num">Score</th>'
+        f'<th class="num" title="{EXPECTED_TITLE}">Expected</th>'
         '<th class="num" title="Jev\'s own measure of how concentrated the probabilities are: 1 means all probability on one option, lower means it was split. Returned with each answer; not the chance that the score is right.">Confidence</th>'
         "<th>Probability by option</th></tr></thead>"
         f'<tbody>{"".join(rows)}</tbody></table>'
@@ -335,6 +370,7 @@ def _render_na_row(item: dict, manifest: dict | None = None) -> str:
         f'<span class="badges">{badges}</span>'
         f'<span class="barwrap na-text" title="{_esc(document.get("reason", na_text))}">{_esc(na_text)}</span>'
         '<span class="total muted">n/a</span>'
+        '<span class="expected muted">–</span>'
         "</summary>"
         f'<div class="detail-body"><p class="small muted">{_esc(document.get("reason", ""))}</p>'
         '<p class="small muted">The layer is configuration, not a model judgment. No Jev request was made for this EIP.</p></div></details>'
@@ -477,7 +513,8 @@ h1 { font-size: 24px; letter-spacing: -0.01em; margin: 0 0 6px; } h2 { font-size
 .tile-label { color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
 .tile.tier-high .tile-value { color: var(--tier-high-ink); } .tile.tier-medium .tile-value { color: var(--tier-medium-ink); } .tile.tier-low .tile-value { color: var(--tier-low-ink); }
 .table { overflow: hidden; }
-.header-row, .overview { display: grid; grid-template-columns: 150px minmax(180px, 1.1fr) 64px minmax(260px, 3fr) 84px; gap: 12px; align-items: center; padding: 0 14px; }
+.header-row, .overview { display: grid; grid-template-columns: 150px minmax(180px, 1.1fr) 64px minmax(260px, 3fr) 84px 104px; gap: 12px; align-items: center; padding: 0 14px; }
+.expected { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); white-space: nowrap; } .expected .sd { color: var(--ink-3); font-size: 11.5px; }
 .header-row { position: sticky; top: 0; z-index: 2; background: var(--card-2); border-bottom: 1px solid var(--line); color: var(--ink-2); font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; min-height: 38px; }
 .header-row .num { justify-self: end; }
 button.sort { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 10px 0; color: inherit; font: inherit; text-transform: inherit; letter-spacing: inherit; border-radius: 4px; }
@@ -551,8 +588,8 @@ details.crit > summary::-webkit-details-marker { display: none; } details.crit p
 ul.opts { list-style: none; padding: 0; margin: 4px 0 8px; } ul.opts li { padding: 2px 0; } ul.opts .opt { display: inline-block; min-width: 1.6em; text-align: right; margin-right: 8px; color: var(--ink-2); }
 @media (max-width: 800px) {
   .header-row { display: none; }
-  .overview { grid-template-columns: 1fr auto auto; grid-template-areas: "eip badges total" "title title title" "bar bar bar"; row-gap: 6px; }
-  .eip { grid-area: eip; } .badges { grid-area: badges; } .total { grid-area: total; } .title { grid-area: title; white-space: normal; } .barwrap { grid-area: bar; }
+  .overview { grid-template-columns: 1fr auto auto auto; grid-template-areas: "eip badges total expected" "title title title title" "bar bar bar bar"; row-gap: 6px; }
+  .eip { grid-area: eip; } .badges { grid-area: badges; } .total { grid-area: total; } .expected { grid-area: expected; } .title { grid-area: title; white-space: normal; } .barwrap { grid-area: bar; }
   .detail-body { padding-left: 14px; }
   dl.prov { grid-template-columns: 1fr; }
   .distcell { min-width: 0; } .dist { width: 100%; }
@@ -565,7 +602,7 @@ _JS = """
   var list = document.getElementById('rows');
   var buttons = Array.prototype.slice.call(document.querySelectorAll('button.sort'));
   if (!list || !buttons.length) return;
-  var numeric = { number: true, total: true, stageRank: true };
+  var numeric = { number: true, total: true, stageRank: true, expected: true };
   var state = { key: 'total', dir: -1 };
   function value(row, key) { var v = row.dataset[key]; return numeric[key] ? Number(v) : v; }
   function apply() {
@@ -588,7 +625,7 @@ _JS = """
     button.addEventListener('click', function () {
       var key = button.dataset.key;
       if (key === state.key) { state.dir = -state.dir; }
-      else { state.key = key; state.dir = key === 'total' ? -1 : 1; }
+      else { state.key = key; state.dir = (key === 'total' || key === 'expected') ? -1 : 1; }
       apply();
     });
   });
@@ -781,7 +818,10 @@ def _render_how(manifest: dict, example: dict, largest: dict | None = None) -> s
         f'<a href="{confidence_url}">confidence</a>. The score is the most probable option; the total, the Cross-EIP bonus and the tier '
         f'are computed in code from the {template_text}\'s rules. Nothing is generated as prose. The confidence is Jev\'s own '
         "measure of how concentrated the probabilities are, 1 meaning all on one option; it is returned with each answer, it "
-        "is not the chance that the score is right, and no score is adjusted by it.</li>"
+        "is not the chance that the score is right, and no score is adjusted by it. The Expected column is derived on this page "
+        "from those probabilities: each criterion\'s options weighted by their probability and summed, plus the recorded "
+        "Cross-EIP bonus, with a standard deviation from the summed per-criterion variances that shows how much of the total "
+        "rests on split judgments. It is not a Jev output and it does not affect the tier.</li>"
         "</ol>"
         f'<p class="small">Example, exactly as sent and answered for <a href="#eip-{entry["number"]}">EIP-{entry["number"]}</a>'
         + (f' (<a href="{_esc(markdown_link)}">source Markdown</a>, <a href="{_esc(entry["path"])}">full request and response</a>)' if markdown_link and entry.get("path") else "")
@@ -886,10 +926,11 @@ def _render_definitions(example: dict, anchors: list[dict], styles: dict[str, di
     return f'<div class="defs">{"".join(blocks)}</div>'
 
 
-def _sort_header(label: str, key: str, *, cls: str = "") -> str:
+def _sort_header(label: str, key: str, *, cls: str = "", title: str | None = None) -> str:
+    tooltip = _esc(title) if title else f"Sort by {_esc(label.lower())}"
     return (
         f'<span role="columnheader" aria-sort="none" class="{cls}">'
-        f'<button type="button" class="sort" data-key="{key}" title="Sort by {_esc(label.lower())}">{_esc(label)}<span class="arrow"></span></button></span>'
+        f'<button type="button" class="sort" data-key="{key}" title="{tooltip}">{_esc(label)}<span class="arrow"></span></button></span>'
     )
 
 
@@ -946,6 +987,7 @@ def render_html(manifest: dict, items: list[dict]) -> str:
         + _sort_header("Stage", "stageRank")
         + '<span role="columnheader">Criteria scores <span class="hint">· segment width ∝ score · click a row for details</span></span>'
         + _sort_header("Total", "total", cls="num")
+        + _sort_header("Expected ± sd", "expected", cls="num", title=EXPECTED_TITLE)
         + "</div>"
     )
     return (

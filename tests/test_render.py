@@ -134,6 +134,32 @@ def test_rows_sorted_by_total_descending():
     assert '<a href="https://github.com/ethereum/EIPs/blob/abc123def456/EIPS/eip-8081.md" title="EIP-8081, the meta EIP this list was taken from, at the assessed commit">1 EIPs · EIP-8081</a>' in html
 
 
+def test_expected_total_is_probability_weighted():
+    from eip_complexity.render import expected_score, expected_total
+
+    anchor = {"probabilities": {"0": 0.1, "1": 0.2, "2": 0.3, "3": 0.4, "4": 0.0}}
+    assert abs(expected_score(anchor) - (0.2 + 0.6 + 1.2)) < 1e-9
+    scores = {"anchors": [anchor, {"probabilities": {"0": 0.5, "3": 0.5}}], "cross_eip": {"bonus": 1}}
+    assert abs(expected_total(scores) - (2.0 + 1.5 + 1)) < 1e-9
+    assert expected_total({"anchors": [anchor], "cross_eip": None}) == expected_score(anchor)
+    from eip_complexity.render import score_variance, total_sd
+
+    certain = {"probabilities": {"0": 0.0, "3": 1.0}}
+    assert score_variance(certain) == 0.0
+    split = {"probabilities": {"1": 0.5, "3": 0.5}}
+    assert abs(score_variance(split) - 1.0) < 1e-9  # mean 2, values ±1
+    assert abs(total_sd({"anchors": [split, split, certain], "cross_eip": None}) - 2 ** 0.5) < 1e-9
+
+
+def test_expected_column_is_rendered_and_sortable(completed_run):
+    html = render_run(completed_run).read_text()
+    assert '<button type="button" class="sort" data-key="expected"' in html
+    assert 'data-expected="' in html and '<span class="expected" title="Probability-weighted total' in html
+    assert '<span class="sd"> ± ' in html
+    assert "<th class=\"num\" title=\"Probability-weighted total" in html  # per-criterion column in the details table
+    assert "The Expected column is derived on this page" in html
+
+
 def test_anchor_styles_are_stable_and_labelled(template):
     ids = [a.id for a in template.anchors]
     styles = anchor_styles(ids)
